@@ -100,7 +100,8 @@ namespace IngameScript
         public Program()
         {
             string[] storeType = new string[4] {"Components", "Tools", "Ores", "Ingots"};
-            AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
+            AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeType, timeRefresh);
+            //AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
             if (AutoStore.StoreComp.Block != null)
             {
                 Runtime.UpdateFrequency = UpdateFrequency.Update10;
