@@ -26,52 +26,69 @@ namespace IngameScript
 
         // Список компонентов (меняем только указанные цены и закупку/продажу. Названия не трогать!)
         static internal Dictionary<string, MyItem> Components = new Dictionary<string, MyItem>()
-        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true),// Бронестекло
-            ["Canvas"] = new MyItem(10, 2500, true, 3105, true),// Парашут
-            ["Computer"] = new MyItem(400, 45, true, 47, true),// Компьютеры
-            ["Construction"] = new MyItem(1000, 430, true, 498, true),// Строительные компоненты
-            ["Detector"] = new MyItem(30, 2236, true, 2743, true),// Компоненты детектора
-            ["Display"] = new MyItem(30, 381, true, 416, true),// Экраны
-            ["Explosives"] = new MyItem(0, 33633, false, 37475, false),// Взрывчатка
-            ["Girder"] = new MyItem(100, 360, true, 374, true),// Балка
-            ["GravityGenerator"] = new MyItem(0, 150000, false, 385875, false),// Компоненты гравигенератора
-            ["InteriorPlate"] = new MyItem(200, 154, true, 187, true),// Внутренние пластины
-            ["LargeTube"] = new MyItem(200, 1702, true, 2079, true),// Большие трубы
-            ["Medical"] = new MyItem(0, 40000, false, 43072, false),// Медицинские компоненты
-            ["MetalGrid"] = new MyItem(300, 3265, true, 3625, true),// Компоненты решетки
-            ["Motor"] = new MyItem(150, 2008, true, 2228, true),// Моторы
-            ["PowerCell"] = new MyItem(50, 1078, true, 1180, true),// Батарейки
-            ["RadioCommunication"] = new MyItem(30, 515, true, 710, true),//Радиоантенна
-            ["Reactor"] = new MyItem(0, 6410, false, 8478, false),// Компоненты реактора
-            ["SmallTube"] = new MyItem(300, 267, true, 311, true),// Малые трубки
-            ["SolarCell"] = new MyItem(0, 641, false, 849, false),// Солнечные панели
-            ["SteelPlate"] = new MyItem(2500, 1236, true, 1311, true),// Стальные пластины
-            ["Superconductor"] = new MyItem(0, 21354, false, 26524, false),// Сверхпроводник
-            ["Thrust"] = new MyItem(0, 41325, false, 45068, false),// Компоненты двигателей
-            ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false),// Ключи
+        {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+            ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true),      // Бронестекло
+            ["Canvas"] = new MyItem(10, 2500, true, 3105, true),                // Парашут
+            ["Computer"] = new MyItem(400, 45, true, 47, true),                 // Компьютеры
+            ["Construction"] = new MyItem(1000, 430, true, 498, true),          // Строительные компоненты
+            ["Detector"] = new MyItem(30, 2236, true, 2743, true),              // Компоненты детектора
+            ["Display"] = new MyItem(30, 381, true, 416, true),                 // Экраны
+            ["Explosives"] = new MyItem(0, 33633, false, 37475, false),         // Взрывчатка
+            ["Girder"] = new MyItem(100, 360, true, 374, true),                 // Балка
+            ["GravityGenerator"] = new MyItem(0, 150000, false, 385875, false), // Компоненты гравигенератора
+            ["InteriorPlate"] = new MyItem(200, 154, true, 187, true),          // Внутренние пластины
+            ["LargeTube"] = new MyItem(200, 1702, true, 2079, true),            // Большие трубы
+            ["Medical"] = new MyItem(0, 40000, false, 43072, false),            // Медицинские компоненты
+            ["MetalGrid"] = new MyItem(300, 3265, true, 3625, true),            // Компоненты решетки
+            ["Motor"] = new MyItem(150, 2008, true, 2228, true),                // Моторы
+            ["PowerCell"] = new MyItem(50, 1078, true, 1180, true),             // Батарейки
+            ["RadioCommunication"] = new MyItem(30, 515, true, 710, true),      //Радиоантенна
+            ["Reactor"] = new MyItem(0, 6410, false, 8478, false),              // Компоненты реактора
+            ["SmallTube"] = new MyItem(300, 267, true, 311, true),              // Малые трубки
+            ["SolarCell"] = new MyItem(0, 641, false, 849, false),              // Солнечные панели
+            ["SteelPlate"] = new MyItem(2500, 1236, true, 1311, true),          // Стальные пластины
+            ["Superconductor"] = new MyItem(0, 21354, false, 26524, false),     // Сверхпроводник
+            ["Thrust"] = new MyItem(0, 41325, false, 45068, false),             // Компоненты двигателей
+            ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false),         // Ключи
         };
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
         {
-            ["UltimateAutomaticRifleItem"] = new MyItem(),// Элитная виновка
-            ["AngleGrinder4Item"] = new MyItem(), // Элитная пила
-            ["HandDrill4Item"] = new MyItem(), // Элитный бур
-            ["Welder4Item"] = new MyItem(), // Элитная горелка
-            ["HydrogenBottle"] = new MyItem(), // Водородный баллон
-            ["OxygenBottle"] = new MyItem(), // Кислородный баллон
-            ["Missile200mm"] = new MyItem(), // Ракеты
-            ["NATO_25x184mm"] = new MyItem(), // Коробка патронов
-            ["NATO_5p56x45mm"] = new MyItem(), // Магазин с патронами
+            ["UltimateAutomaticRifleItem"] = new MyItem(0, 0, true, 0, true),   // Элитная виновка
+            ["AngleGrinder4Item"] = new MyItem(0, 0, true, 0, true),            // Элитная пила
+            ["HandDrill4Item"] = new MyItem(0, 0, true, 0, true),               // Элитный бур
+            ["Welder4Item"] = new MyItem(0, 0, true, 0, true),                  // Элитная горелка
+            ["HydrogenBottle"] = new MyItem(0, 0, true, 0, true),               // Водородный баллон
+            ["OxygenBottle"] = new MyItem(0, 0, true, 0, true),                 // Кислородный баллон
+            ["Missile200mm"] = new MyItem(0, 0, true, 0, true),                 // Ракеты
+            ["NATO_25x184mm"] = new MyItem(0, 0, true, 0, true),                // Коробка патронов
+            ["NATO_5p56x45mm"] = new MyItem(0, 0, true, 0, true),               // Магазин с патронами
         };
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
-        {
-
+        {   //Слитки
+            ["Ingot/Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
+            ["Ingot/Gold"] = new MyItem(0, 0, true, 0, true),        // Золото
+            ["Ingot/Stone"] = new MyItem(0, 0, true, 0, true),       // Камень
+            ["Ingot/Iron"] = new MyItem(0, 0, true, 0, true),        // Железо
+            ["Ingot/Magnesium"] = new MyItem(0, 0, true, 0, true),   // Магний
+            ["Ingot/Nickel"] = new MyItem(0, 0, true, 0, true),      // Никель
+            ["Ingot/Platinum"] = new MyItem(0, 0, true, 0, true),    // Платина
+            ["Ingot/Silicon"] = new MyItem(0, 0, true, 0, true),     // Кремний
+            ["Ingot/Silver"] = new MyItem(0, 0, true, 0, true),      // Серебро
+            ["Ingot/Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
         };
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
-        {
-
+        {   //Руды
+            ["Ore/Cobalt"] = new MyItem(0, 0, true, 0, true),        // Кобальт
+            ["Ore/Gold"] = new MyItem(0, 0, true, 0, true),          // Золото
+            ["Ore/Stone"] = new MyItem(0, 0, true, 0, true),         // Камень
+            ["Ore/Iron"] = new MyItem(0, 0, true, 0, true),          // Железо
+            ["Ore/Magnesium"] = new MyItem(0, 0, true, 0, true),     // Магний
+            ["Ore/Nickel"] = new MyItem(0, 0, true, 0, true),        // Никель
+            ["Ore/Platinum"] = new MyItem(0, 0, true, 0, true),      // Платина
+            ["Ore/Silicon"] = new MyItem(0, 0, true, 0, true),       // Кремний
+            ["Ore/Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
+            ["Ore/Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
         };
-
         // ============ КОНЕЦ НАСТРОЕК ============
         MyAutoStore AutoStore;
         readonly string[] arguments = new string[] {
