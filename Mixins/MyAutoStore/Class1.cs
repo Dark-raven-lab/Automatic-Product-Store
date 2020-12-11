@@ -22,7 +22,10 @@ namespace IngameScript
         public class MyAutoStore
         {
             int _invenoryCounter = 0; // Счётчик для инвентаря
-            internal MyProductStore StoreComp; // Подсистема магазина
+            internal MyProductStore StoreComp; // Подсистема магазина компонентов
+            internal MyProductStore StoreIng; // Подсистема магазина слитков
+            internal MyProductStore StoreOre; // Подсистема магазина руды
+            internal MyProductStore StoreTool; // Подсистема магазина инструментов
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
           
@@ -37,11 +40,15 @@ namespace IngameScript
             internal MyAutoStore(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string storeName, int secondsForUpdate = 3600)
             {
                 StoreComp = new MyProductStore(TerminalSystem, CubeGrid, storeName);
+                StoreIng = new MyProductStore(TerminalSystem, CubeGrid, "слитки");
+                StoreOre = new MyProductStore(TerminalSystem, CubeGrid, "руды");
+                StoreTool = new MyProductStore(TerminalSystem, CubeGrid, "инструменты");
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             internal MyAutoStore(IMyStoreBlock Store, int secondsForUpdate = 3600)
             {
                 this.StoreComp = new MyProductStore(Store);
+                // Добавить магазины в конструктор!
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string storeName = "")
@@ -82,12 +89,14 @@ namespace IngameScript
                     terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && x.CustomName.ToLower().Contains(tagContainer.ToLower()));
                 if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && !x.CustomName.ToLower().Contains(tagExclude.ToLower()));
             }
+            
             void PlaceOffers()
             {
                 if (_containers.Count == 0) return;
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
-                    StoreComp.OfferingsAndSales(Components); // Выкладываем товары в магазин
+                    StoreComp.OfferingsAndSales(Components); // Выкладываем товары в магазин компонентов
+                    // тут добавляем другие магазины
                     _containers.Clear(); // Чистим список контейнеров
                     TimeCheckStore.Start(); // Запускаем таймер
                 }
@@ -125,6 +134,21 @@ namespace IngameScript
                         Components[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     }
                     else ComponentsInfo += $"\nКомпонент [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
+                    if (Ingots.ContainsKey(item.Type.SubtypeId))
+                    {
+                        Ingots[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    }
+                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
+                    if (Ores.ContainsKey(item.Type.SubtypeId))
+                    {
+                        Ores[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    }
+                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
+                    if (Tools.ContainsKey(item.Type.SubtypeId))
+                    {
+                        Tools[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    }
+                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
                 }
             }
             string TranslateName_components(string name)
