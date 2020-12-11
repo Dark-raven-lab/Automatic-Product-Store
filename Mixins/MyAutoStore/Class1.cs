@@ -28,8 +28,14 @@ namespace IngameScript
             internal MyProductStore StoreTool; // Подсистема магазина инструментов
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
-          
-            internal string ComponentsInfo { get; private set; } = "";
+
+            string _infoComponents, _infoIngots, _infoOres, _infoTools;
+            internal string ComponentsInfo { get { return _infoComponents; } }
+            internal string InfoIngots { get { return _infoIngots; } } 
+            internal string InfoOres { get { return _infoOres; } }
+            internal string InfoTools { get { return _infoTools; } }
+
+            internal string Warning { get; private set; }
             /// <summary>
             /// Конструктор с поиском блока магазина
             /// </summary>
@@ -111,16 +117,18 @@ namespace IngameScript
                 if (_invenoryCounter < _containers.Count)
                 {
                     List<MyInventoryItem> items = new List<MyInventoryItem>();
-                    _containers[_invenoryCounter].GetInventory().GetItems(items, x => x.Type.TypeId.ToLower().Contains("component"));
+                    //_containers[_invenoryCounter].GetInventory().GetItems(items, x => x.Type.TypeId.ToLower().Contains("component"));
+                    _containers[_invenoryCounter].GetInventory().GetItems(items);
                     SortingItems(items); // Сортировка найденных объектов
                     _invenoryCounter++; // Переходим к следующему инвентарю
                     return false;
                 }
                 else
                 {
-                    ComponentsInfo = "\n=== КОМПОНЕНТЫ ===";
-                    foreach (var component in Components)
-                    { ComponentsInfo += $"\n{TranslateName_components(component.Key)} : {component.Value.Amount}"; }
+                    WriteItemsInfo(Components, "КОМПОНЕНТЫ", out _infoComponents);
+                    WriteItemsInfo(Ingots, "СЛИТКИ", out _infoComponents);
+                    WriteItemsInfo(Ores, "РУДЫ", out _infoComponents);
+                    WriteItemsInfo(Tools, "ИНСТРУМЕНТЫ", out _infoComponents);
                     _invenoryCounter = 0;
                     return true;
                 }
@@ -129,28 +137,26 @@ namespace IngameScript
             {
                 foreach (var item in items)
                 {
-                    if (Components.ContainsKey(item.Type.SubtypeId))
-                    {
+                    if (item.Type.TypeId == "MyObjectBuilder_Component" && Components.ContainsKey(item.Type.SubtypeId)) // Если имя сходится с тем что в словаре
                         Components[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
-                    }
-                    else ComponentsInfo += $"\nКомпонент [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
-                    if (Ingots.ContainsKey(item.Type.SubtypeId))
-                    {
+                    else if (item.Type.TypeId == "MyObjectBuilder_Ingot" && Ingots.ContainsKey(item.Type.SubtypeId))
                         Ingots[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
-                    }
-                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
-                    if (Ores.ContainsKey(item.Type.SubtypeId))
-                    {
+                    else if (item.Type.TypeId == "MyObjectBuilder_Ore" && Ores.ContainsKey(item.Type.SubtypeId))
                         Ores[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
-                    }
-                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
-                    if (Tools.ContainsKey(item.Type.SubtypeId))
-                    {
+                    else if (item.Type.TypeId == "MyObjectBuilder_Tool" && Tools.ContainsKey(item.Type.SubtypeId)) // Название не факт
                         Tools[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
-                    }
-                    else ComponentsInfo += $"\nСлиток [{item.Type.SubtypeId}] отсутствует в изначальном словаре";
+                    else
+                        Warning += $"\nХрень [{item.Type.TypeId}] отсутствует в словарях";
                 }
             }
+            
+            void WriteItemsInfo(Dictionary<string, MyItem> DictItems, string header, out string info)
+            {
+                info = $"\n=== {header} ===";
+                foreach (var Item in DictItems)
+                { info += $"\n{TranslateName_components(Item.Key)} : {Item.Value.Amount}"; }
+            }
+
             string TranslateName_components(string name)
             {
                 string newname = "";
