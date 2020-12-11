@@ -99,7 +99,7 @@ namespace IngameScript
 
         public Program()
         {
-            AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
+            //AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
             if (AutoStore.StoreComp.Block != null)
             {
                 Runtime.UpdateFrequency = UpdateFrequency.Update10;

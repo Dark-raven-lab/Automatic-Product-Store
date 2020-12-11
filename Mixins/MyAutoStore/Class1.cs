@@ -43,12 +43,12 @@ namespace IngameScript
             /// <param name="CubeGrid"></param>
             /// <param name="storeName">Имя блока магазина</param>
             /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyAutoStore(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string storeName, int secondsForUpdate = 3600)
+            internal MyAutoStore(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string[] storeName, int secondsForUpdate = 3600)
             {
-                StoreComp = new MyProductStore(TerminalSystem, CubeGrid, storeName);
-                StoreIng = new MyProductStore(TerminalSystem, CubeGrid, "слитки");
-                StoreOre = new MyProductStore(TerminalSystem, CubeGrid, "руды");
-                StoreTool = new MyProductStore(TerminalSystem, CubeGrid, "инструменты");
+                StoreComp = new MyProductStore(TerminalSystem, CubeGrid, storeName[0]);
+                StoreIng = new MyProductStore(TerminalSystem, CubeGrid, storeName[1]);
+                StoreOre = new MyProductStore(TerminalSystem, CubeGrid, storeName[2]);
+                StoreTool = new MyProductStore(TerminalSystem, CubeGrid, storeName[3]);
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             internal MyAutoStore(IMyStoreBlock Store, int secondsForUpdate = 3600)
@@ -102,6 +102,9 @@ namespace IngameScript
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
                     StoreComp.OfferingsAndSales(Components); // Выкладываем товары в магазин компонентов
+                    StoreIng.OfferingsAndSales(Ingots); // Выкладываем товары в магазин слитков
+                    StoreOre.OfferingsAndSales(Ores); // Выкладываем товары в магазин руд
+                    StoreComp.OfferingsAndSales(Tools); // Выкладываем товары в магазин инструментов
                     // тут добавляем другие магазины
                     _containers.Clear(); // Чистим список контейнеров
                     TimeCheckStore.Start(); // Запускаем таймер
@@ -133,6 +136,7 @@ namespace IngameScript
                     return true;
                 }
             }
+            
             void SortingItems(List<MyInventoryItem> items)
             {
                 foreach (var item in items)
