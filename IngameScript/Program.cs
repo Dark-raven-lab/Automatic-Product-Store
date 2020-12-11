@@ -65,29 +65,29 @@ namespace IngameScript
         };
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {   //Слитки
-            ["Ingot/Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
-            ["Ingot/Gold"] = new MyItem(0, 0, true, 0, true),        // Золото
-            ["Ingot/Stone"] = new MyItem(0, 0, true, 0, true),       // Камень
-            ["Ingot/Iron"] = new MyItem(0, 0, true, 0, true),        // Железо
-            ["Ingot/Magnesium"] = new MyItem(0, 0, true, 0, true),   // Магний
-            ["Ingot/Nickel"] = new MyItem(0, 0, true, 0, true),      // Никель
-            ["Ingot/Platinum"] = new MyItem(0, 0, true, 0, true),    // Платина
-            ["Ingot/Silicon"] = new MyItem(0, 0, true, 0, true),     // Кремний
-            ["Ingot/Silver"] = new MyItem(0, 0, true, 0, true),      // Серебро
-            ["Ingot/Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
+            ["Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
+            ["Gold"] = new MyItem(0, 0, true, 0, true),        // Золото
+            ["Stone"] = new MyItem(0, 0, true, 0, true),       // Камень
+            ["Iron"] = new MyItem(0, 0, true, 0, true),        // Железо
+            ["Magnesium"] = new MyItem(0, 0, true, 0, true),   // Магний
+            ["Nickel"] = new MyItem(0, 0, true, 0, true),      // Никель
+            ["Platinum"] = new MyItem(0, 0, true, 0, true),    // Платина
+            ["Silicon"] = new MyItem(0, 0, true, 0, true),     // Кремний
+            ["Silver"] = new MyItem(0, 0, true, 0, true),      // Серебро
+            ["Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
         };
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {   //Руды
-            ["Ore/Cobalt"] = new MyItem(0, 0, true, 0, true),        // Кобальт
-            ["Ore/Gold"] = new MyItem(0, 0, true, 0, true),          // Золото
-            ["Ore/Stone"] = new MyItem(0, 0, true, 0, true),         // Камень
-            ["Ore/Iron"] = new MyItem(0, 0, true, 0, true),          // Железо
-            ["Ore/Magnesium"] = new MyItem(0, 0, true, 0, true),     // Магний
-            ["Ore/Nickel"] = new MyItem(0, 0, true, 0, true),        // Никель
-            ["Ore/Platinum"] = new MyItem(0, 0, true, 0, true),      // Платина
-            ["Ore/Silicon"] = new MyItem(0, 0, true, 0, true),       // Кремний
-            ["Ore/Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
-            ["Ore/Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
+            ["Cobalt"] = new MyItem(1000, 300, true, 1, true),        // Кобальт
+            ["Gold"] = new MyItem(1000, 0, false, 2, true),          // Золото
+            ["Stone"] = new MyItem(1000, 0, false, 3, true),         // Камень
+            ["Iron"] = new MyItem(1000, 0, false, 4, true),          // Железо
+            ["Magnesium"] = new MyItem(0, 0, true, 0, true),     // Магний
+            ["Nickel"] = new MyItem(0, 0, true, 0, true),        // Никель
+            ["Platinum"] = new MyItem(0, 0, true, 0, true),      // Платина
+            ["Silicon"] = new MyItem(0, 0, true, 0, true),       // Кремний
+            ["Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
+            ["Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
         };
         // ============ КОНЕЦ НАСТРОЕК ============
         MyAutoStore AutoStore;
@@ -101,7 +101,6 @@ namespace IngameScript
         {
             string[] storeType = new string[4] {"Components", "Tools", "Ores", "Ingots"};
             AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeType, timeRefresh);
-            //AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
             if (AutoStore.StoreComp.Block != null)
             {
                 Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -116,7 +115,7 @@ namespace IngameScript
             txt += $"\nОбновление магазина через {AutoStore.TimeCheckStore.RestTime} сек";
             if (AutoStore.TimeToUpgrade()) // Ожидаем, пока не настанет время обновления магазина
                 AutoStore.StoreUpdate(GridTerminalSystem, Me, groupContainersForTrade, tagContainerForTrade, tagExclude); // Главный метод обновления товаров в магазине
-            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning);
+            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning + AutoStore.ComponentsInfo);
             if (arg != string.Empty) Arguments(arg);
         }
 
@@ -131,12 +130,16 @@ namespace IngameScript
             else if (arg.ToLower() == arguments[1])
             {
                 AutoStore.StoreComp.ClearAll();
+                AutoStore.StoreIng.ClearAll();
+                AutoStore.StoreOre.ClearAll();
                 Echo(" => \nОчистка завершено");
                 AvailableCommands();
             }
             else if (arg.ToLower() == arguments[2])
             {
                 Me.CustomData = AutoStore.StoreComp.GetOrdersAndOffers();
+                Me.CustomData += AutoStore.StoreIng.GetOrdersAndOffers();
+                Me.CustomData += AutoStore.StoreOre.GetOrdersAndOffers();
                 Echo(" => \nТовары из магазина\nвыведны в данные ПБ");
                 AvailableCommands();
             }
