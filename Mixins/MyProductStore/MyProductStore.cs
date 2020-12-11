@@ -37,11 +37,15 @@ namespace IngameScript
             {
                 GetBlocks(TerminalSystem, CubeGrid, nameStore);
             }
-            internal void GetBlocks(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid ThisCubeGrid, string tagStoreName)
+            internal void GetBlocks(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid ThisCubeGrid, string nameStore)
             {
-                 List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
-                 TerminalSystem.GetBlocksOfType(temp, x => x.CubeGrid == ThisCubeGrid && x.CustomName.ToLower().Contains(tagStoreName.ToLower()));
-                 foreach (var t in temp) { Block = t; break; }
+                Block = TerminalSystem.GetBlockWithName(nameStore) as IMyStoreBlock;
+                if (Block == null)
+                {
+                    List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
+                    TerminalSystem.GetBlocksOfType(temp, x => x.CubeGrid == ThisCubeGrid);
+                    foreach (var t in temp) { if (t.IsWorking) Block = t; break; }
+                }
             }
 
             /// <summary>
