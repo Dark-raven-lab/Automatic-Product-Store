@@ -51,7 +51,7 @@ namespace IngameScript
             /// Размещение списка товаров в магазине
             /// </summary>
             /// <param name="ItemsForSaleBuy"></param>
-            internal void OfferingsAndSales(Dictionary<string, MyItem> ItemsForSaleBuy)
+            internal void OfferingsAndSales(Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name)
             {
                 if (Block != null && Block.IsWorking)
                 {

@@ -101,10 +101,10 @@ namespace IngameScript
                 if (_containers.Count == 0) return;
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
-                    StoreComp.OfferingsAndSales(Components); // Выкладываем товары в магазин компонентов
-                    StoreIng.OfferingsAndSales(Ingots); // Выкладываем товары в магазин слитков
-                    StoreOre.OfferingsAndSales(Ores); // Выкладываем товары в магазин руд
-                    StoreComp.OfferingsAndSales(Tools); // Выкладываем товары в магазин инструментов
+                    StoreComp.OfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
+                    StoreIng.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
+                    StoreOre.OfferingsAndSales(Ores, ""); // Выкладываем товары в магазин руд
+                    StoreComp.OfferingsAndSales(Tools, ""); // Выкладываем товары в магазин инструментов
                     // тут добавляем другие магазины
                     _containers.Clear(); // Чистим список контейнеров
                     TimeCheckStore.Start(); // Запускаем таймер
