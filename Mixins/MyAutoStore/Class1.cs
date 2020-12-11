@@ -29,7 +29,7 @@ namespace IngameScript
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
-            string _infoComponents, _infoIngots, _infoOres, _infoTools;
+            string _infoComponents = "", _infoIngots = "", _infoOres = "", _infoTools = "";
             internal string ComponentsInfo { get { return _infoComponents; } }
             internal string InfoIngots { get { return _infoIngots; } } 
             internal string InfoOres { get { return _infoOres; } }
