@@ -6,7 +6,6 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        /*Вношу свою лепту в этот код, могу писать комментарии, а могу и не писать комментарии*/
         // ============  ОБЯЗАТЕЛЬНЫЕ НАСТРОЙКИ ============ 
         const string storeName = "Магазин компонентов"; // Имя блока магазина (если не указано то будет выбран первый подходящий в гирде)
 
@@ -48,6 +47,26 @@ namespace IngameScript
             ["Superconductor"] = new MyItem(0, 21354, false, 26524, false),// Сверхпроводник
             ["Thrust"] = new MyItem(0, 41325, false, 45068, false),// Компоненты двигателей
             ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false),// Ключи
+        };
+        static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
+        {
+            ["UltimateAutomaticRifleItem"] = new MyItem(),// Элитная виновка
+            ["AngleGrinder4Item"] = new MyItem(), // Элитная пила
+            ["HandDrill4Item"] = new MyItem(), // Элитный бур
+            ["Welder4Item"] = new MyItem(), // Элитная горелка
+            ["HydrogenBottle"] = new MyItem(), // Водородный баллон
+            ["OxygenBottle"] = new MyItem(), // Кислородный баллон
+            ["Missile200mm"] = new MyItem(), // Ракеты
+            ["NATO_25x184mm"] = new MyItem(), // Коробка патронов
+            ["NATO_5p56x45mm"] = new MyItem(), // Магазин с патронами
+        };
+        static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
+        {
+
+        };
+        static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
+        {
+
         };
 
         // ============ КОНЕЦ НАСТРОЕК ============
