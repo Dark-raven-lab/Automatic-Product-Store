@@ -99,6 +99,8 @@ namespace IngameScript
 
         public Program()
         {
+            string[] storeType = new string[4] {"Components", "Tools", "Ores", "Ingots"};
+            AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeType, timeRefresh);
             //AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeName, timeRefresh);
             if (AutoStore.StoreComp.Block != null)
             {
@@ -114,7 +116,7 @@ namespace IngameScript
             txt += $"\nОбновление магазина через {AutoStore.TimeCheckStore.RestTime} сек";
             if (AutoStore.TimeToUpgrade()) // Ожидаем, пока не настанет время обновления магазина
                 AutoStore.StoreUpdate(GridTerminalSystem, Me, groupContainersForTrade, tagContainerForTrade, tagExclude); // Главный метод обновления товаров в магазине
-            Me.GetSurface(0).WriteText(txt);
+            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning);
             if (arg != string.Empty) Arguments(arg);
         }
 
