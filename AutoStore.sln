@@ -3,7 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IngameScript", "IngameScript\IngameScript.csproj", "{3C77A404-DA81-43FE-B88B-09D4500D1D8C}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C77A404-DA81-43FE-B88B-09D4500D1D8C}.Debug|x64.ActiveCfg = Debug|x64
+		{3C77A404-DA81-43FE-B88B-09D4500D1D8C}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
