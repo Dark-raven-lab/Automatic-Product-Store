@@ -29,52 +29,56 @@ namespace IngameScript
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
-            string _infoComponents = "", _infoIngots = "", _infoOres = "", _infoTools = "";
+            string _infoComponents = "", _infoIngots = "", _infoOres = ""/*, _infoTools = ""*/;
             internal string ComponentsInfo { get { return _infoComponents; } }
             internal string InfoIngots { get { return _infoIngots; } } 
             internal string InfoOres { get { return _infoOres; } }
             //internal string InfoTools { get { return _infoTools; } }
 
             internal string Warning { get; private set; }
+            
             /// <summary>
             /// Конструктор с поиском блока магазина
             /// </summary>
             /// <param name="TerminalSystem"></param>
             /// <param name="CubeGrid"></param>
-            /// <param name="storeName">Имя блока магазина</param>
+            /// <param name="storeTags">Имя блока магазина</param>
             /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyAutoStore(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string[] storeName, int secondsForUpdate = 3600)
+            internal MyAutoStore(int secondsForUpdate = 3600)
             {
-                StoreComp = new MyProductStore(TerminalSystem, CubeGrid, storeName[0]);
-                StoreIng = new MyProductStore(TerminalSystem, CubeGrid, storeName[1]);
-                StoreOre = new MyProductStore(TerminalSystem, CubeGrid, storeName[2]);
+                TimeCheckStore = new Timer(secondsForUpdate, false);
+            }
+            
+            internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string[] storeTags)
+            {
+                List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
+                TerminalSystem.GetBlocksOfType(temp, x => x.CubeGrid == CubeGrid);
+                foreach (var storeBlock in temp)
+                {
+                    if (storeBlock.CustomName.ToLower().Contains(storeTags[0].ToLower())) StoreComp = new MyProductStore(storeBlock);
+                    else if (storeBlock.CustomName.ToLower().Contains(storeTags[1].ToLower())) StoreIng = new MyProductStore(storeBlock);
+                    else if (storeBlock.CustomName.ToLower().Contains(storeTags[2].ToLower())) StoreOre = new MyProductStore(storeBlock);
+                }
                 //StoreTool = new MyProductStore(TerminalSystem, CubeGrid, storeName[3]);
-                TimeCheckStore = new Timer(secondsForUpdate, false);
             }
-            internal MyAutoStore(IMyStoreBlock Store, int secondsForUpdate = 3600)
-            {
-                this.StoreComp = new MyProductStore(Store);
-                // Добавить магазины в конструктор!
-                TimeCheckStore = new Timer(secondsForUpdate, false);
-            }
-            internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string storeName = "")
-            {
-                StoreComp.GetBlocks(TerminalSystem, CubeGrid, storeName);
-            }
+
             /// <summary>
             /// Возвращает true, если настало время обновлять торговые предложения
             /// </summary>
             internal bool TimeToUpgrade(){ { return TimeCheckStore.IsOut(); } }
+            
             /// <summary>
             /// Обновление торговых предложений
             /// </summary>
             /// <param name="terminalSystem">Интерфейс для поиска блоков</param>
             /// <param name="Me">Программный блок</param>
+            
             internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group, string tagContainer, string tagExclude = "исключить")
             {
                 GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
                 PlaceOffers();
             }
+            
             /// <summary>
             /// Обновление торговых предложений
             /// </summary>
@@ -110,6 +114,7 @@ namespace IngameScript
                     TimeCheckStore.Start(); // Запускаем таймер
                 }
             }
+            
             /// <summary>
             /// Выполняет поиск и сортировку в инвентаре
             /// </summary>

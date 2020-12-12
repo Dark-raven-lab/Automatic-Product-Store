@@ -10,17 +10,19 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         // ============  ОБЯЗАТЕЛЬНЫЕ НАСТРОЙКИ ============ 
-        const string storeName = "Магазин компонентов"; // Имя блока магазина (если не указано то будет выбран первый подходящий в гирде)
+        string[] storeType = new string[4] { 
+            "Components", // Тег блока магазина с компонентами
+            "Ingots", // Тег блока магазина слитков
+            "Ores", // Тег блока магазина руды
+            "Tools" // Пока хз
+        };
 
         // ============ ОПЦИОНАЛЬНЫЕ НАСТРОЙКИ МАГАЗИНА ============ 
         const int timeRefresh = 3600; // Интервал для обновления товаров в магазине в секундах (3600 сек = 1 час)
-
-        // Тег в названии блока для исключения из работы скрипта
+        // Тег в названии блоков для исключения из работы скрипта (не работает для магазинов)
         const string tagExclude = "Исключить";
-
         // Имя группы контейнеров для проверки ресурсов и торговли (заранее создать группу)
         const string groupContainersForTrade = "";
-
         // Тег в названии контейнера для проверки на наличие ресурсов и торговли
         const string tagContainerForTrade = "";
 
@@ -68,7 +70,7 @@ namespace IngameScript
             ["Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
             ["Gold"] = new MyItem(0, 0, true, 0, true),        // Золото
             ["Stone"] = new MyItem(0, 0, true, 0, true),       // Камень
-            ["Iron"] = new MyItem(0, 0, true, 0, true),        // Железо
+            ["Iron"] = new MyItem(1000, 145, true, 1, true),        // Железо
             ["Magnesium"] = new MyItem(0, 0, true, 0, true),   // Магний
             ["Nickel"] = new MyItem(0, 0, true, 0, true),      // Никель
             ["Platinum"] = new MyItem(0, 0, true, 0, true),    // Платина
@@ -89,7 +91,9 @@ namespace IngameScript
             ["Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
             ["Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
         };
+        
         // ============ КОНЕЦ НАСТРОЕК ============
+        
         MyAutoStore AutoStore;
         readonly string[] arguments = new string[] {
             "магазин.разместить",
@@ -99,8 +103,8 @@ namespace IngameScript
 
         public Program()
         {
-            string[] storeType = new string[4] {"Components", "Tools", "Ores", "Ingots"};
-            AutoStore = new MyAutoStore(GridTerminalSystem, Me.CubeGrid, storeType, timeRefresh);
+            AutoStore = new MyAutoStore(timeRefresh);
+            AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
             if (AutoStore.StoreComp.Block != null)
             {
                 Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -115,7 +119,7 @@ namespace IngameScript
             txt += $"\nОбновление магазина через {AutoStore.TimeCheckStore.RestTime} сек";
             if (AutoStore.TimeToUpgrade()) // Ожидаем, пока не настанет время обновления магазина
                 AutoStore.StoreUpdate(GridTerminalSystem, Me, groupContainersForTrade, tagContainerForTrade, tagExclude); // Главный метод обновления товаров в магазине
-            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning + AutoStore.ComponentsInfo);
+            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning);
             if (arg != string.Empty) Arguments(arg);
         }
 

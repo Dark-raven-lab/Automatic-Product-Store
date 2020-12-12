@@ -22,13 +22,7 @@ namespace IngameScript
         public class MyProductStore
         {
             internal IMyStoreBlock Block { get; private set; } = null;
-
-            /// <summary>
-            /// Поиск необходимых блоков
-            /// </summary>
-            /// <param name="terminalSystem">IMyGridTerminalSystem</param>
-            /// <param name="ThisCubeGrid">Грид, на котором установлен магазин</param>
-            /// <param name="nameStore">Имя блока магазина</param>
+            
             internal MyProductStore(IMyStoreBlock StoreBlock)
             {
                 Block = StoreBlock;
@@ -37,6 +31,13 @@ namespace IngameScript
             {
                 GetBlocks(TerminalSystem, CubeGrid, nameStore);
             }
+
+            /// <summary>
+            /// Поиск необходимых блоков
+            /// </summary>
+            /// <param name="TerminalSystem">IMyGridTerminalSystem</param>
+            /// <param name="ThisCubeGrid">Грид, на котором установлен магазин</param>
+            /// <param name="tagStoreName">Тег блока магазина</param>
             internal void GetBlocks(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid ThisCubeGrid, string tagStoreName)
             {
                 List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
@@ -157,7 +158,7 @@ namespace IngameScript
                 List<MyStoreQueryItem> storeItems = new List<MyStoreQueryItem>();// Товары в магазине
                 string txt;
                 Block.GetPlayerStoreItems(storeItems);
-                txt = $"В магазине {Block.CustomName} выложено {storeItems.Count} товаров";
+                txt = $"\n{Block.CustomName} выложено {storeItems.Count} товаров";
                 foreach (var item in storeItems) { txt += $"\n{item.ItemId.SubtypeId} {item.Amount} шт по цене {item.PricePerUnit}"; }
                 return txt;
             }
