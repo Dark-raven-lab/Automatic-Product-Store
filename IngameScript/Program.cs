@@ -116,7 +116,7 @@ namespace IngameScript
             AutoStore = new MyAutoStore(timeRefresh);
             AutoStore.StoreComp.Trading = tradeComponents;
             AutoStore.StoreIng.Trading = tradeIngots;
-            AutoStore.StoreOre.Trading = tradeIngots;
+            AutoStore.StoreOre.Trading = tradeOres;
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
             if (AutoStore.StoreComp.Block != null)
             {
