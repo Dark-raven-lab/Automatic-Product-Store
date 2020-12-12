@@ -10,6 +10,9 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         // ============  ОБЯЗАТЕЛЬНЫЕ НАСТРОЙКИ ============ 
+        // Список тегов в имени блоков магазинов
+        // Можно добавить 1 тег на каждый магазин или сразу все в один магазин(тогда всё будет в одном магазине)
+
         string[] storeType = new string[4] { 
             "Components", // Тег блока магазина с компонентами
             "Ingots", // Тег блока магазина слитков
@@ -27,6 +30,7 @@ namespace IngameScript
         const string tagContainerForTrade = "";
 
         // Список компонентов (меняем только указанные цены и закупку/продажу. Названия не трогать!)
+        const bool tradeComponents = true; // Разрешить или запретить торговлю компонентами
         static internal Dictionary<string, MyItem> Components = new Dictionary<string, MyItem>()
         {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
             ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true),      // Бронестекло
@@ -53,18 +57,8 @@ namespace IngameScript
             ["Thrust"] = new MyItem(0, 41325, false, 45068, false),             // Компоненты двигателей
             ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false),         // Ключи
         };
-        static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
-        {
-            ["UltimateAutomaticRifleItem"] = new MyItem(0, 0, true, 0, true),   // Элитная виновка
-            ["AngleGrinder4Item"] = new MyItem(0, 0, true, 0, true),            // Элитная пила
-            ["HandDrill4Item"] = new MyItem(0, 0, true, 0, true),               // Элитный бур
-            ["Welder4Item"] = new MyItem(0, 0, true, 0, true),                  // Элитная горелка
-            ["HydrogenBottle"] = new MyItem(0, 0, true, 0, true),               // Водородный баллон
-            ["OxygenBottle"] = new MyItem(0, 0, true, 0, true),                 // Кислородный баллон
-            ["Missile200mm"] = new MyItem(0, 0, true, 0, true),                 // Ракеты
-            ["NATO_25x184mm"] = new MyItem(0, 0, true, 0, true),                // Коробка патронов
-            ["NATO_5p56x45mm"] = new MyItem(0, 0, true, 0, true),               // Магазин с патронами
-        };
+
+        const bool tradeIngots = true; // Разрешить или запретить торговлю слитками
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {   //Слитки
             ["Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
@@ -78,6 +72,8 @@ namespace IngameScript
             ["Silver"] = new MyItem(0, 0, true, 0, true),      // Серебро
             ["Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
         };
+
+        const bool tradeOres = true; // Разрешить или запретить торговлю рудами
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {   //Руды
             ["Cobalt"] = new MyItem(1000, 300, true, 1, true),        // Кобальт
@@ -91,9 +87,23 @@ namespace IngameScript
             ["Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
             ["Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
         };
-        
+
+        const bool tradeTools = true; // Разрешить или запретить всю торговлю инструментами
+        static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
+        {
+            ["UltimateAutomaticRifleItem"] = new MyItem(0, 0, true, 0, true),   // Элитная виновка
+            ["AngleGrinder4Item"] = new MyItem(0, 0, true, 0, true),            // Элитная пила
+            ["HandDrill4Item"] = new MyItem(0, 0, true, 0, true),               // Элитный бур
+            ["Welder4Item"] = new MyItem(0, 0, true, 0, true),                  // Элитная горелка
+            ["HydrogenBottle"] = new MyItem(0, 0, true, 0, true),               // Водородный баллон
+            ["OxygenBottle"] = new MyItem(0, 0, true, 0, true),                 // Кислородный баллон
+            ["Missile200mm"] = new MyItem(0, 0, true, 0, true),                 // Ракеты
+            ["NATO_25x184mm"] = new MyItem(0, 0, true, 0, true),                // Коробка патронов
+            ["NATO_5p56x45mm"] = new MyItem(0, 0, true, 0, true),               // Магазин с патронами
+        };
+
         // ============ КОНЕЦ НАСТРОЕК ============
-        
+
         MyAutoStore AutoStore;
         readonly string[] arguments = new string[] {
             "магазин.разместить",
@@ -104,6 +114,9 @@ namespace IngameScript
         public Program()
         {
             AutoStore = new MyAutoStore(timeRefresh);
+            AutoStore.StoreComp.Trading = tradeComponents;
+            AutoStore.StoreIng.Trading = tradeIngots;
+            AutoStore.StoreOre.Trading = tradeIngots;
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
             if (AutoStore.StoreComp.Block != null)
             {

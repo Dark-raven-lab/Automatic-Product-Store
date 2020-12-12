@@ -121,15 +121,9 @@ namespace IngameScript
                 if (_containers.Count == 0) return;
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
-                    StoreComp.OfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
-                    if (StoreIng != null)
-                        StoreIng.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
-                    else 
-                        StoreComp.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин компонентов
-                    if (StoreOre != null)
-                        StoreOre.OfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
-                    else
-                        StoreComp.OfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин компонентов
+                    StoreComp.PlaceOfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
+                    StoreIng.PlaceOfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
+                    StoreOre.PlaceOfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
                     
                     //StoreComp.OfferingsAndSales(Tools, "MyObjectBuilder_Tool/"); // Выкладываем товары в магазин инструментов
                     // тут добавляем другие магазины
@@ -137,7 +131,7 @@ namespace IngameScript
                     TimeCheckStore.Start(); // Запускаем таймер
                 }
             }
-            
+
             /// <summary>
             /// Выполняет поиск и сортировку в инвентаре
             /// </summary>
