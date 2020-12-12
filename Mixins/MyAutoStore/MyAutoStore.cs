@@ -44,8 +44,11 @@ namespace IngameScript
             /// <param name="CubeGrid"></param>
             /// <param name="storeTags">Имя блока магазина</param>
             /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyAutoStore(int secondsForUpdate = 3600)
+            internal MyAutoStore(bool tradeComponents, bool tradeIngots, bool tradeOres, int secondsForUpdate = 3600)
             {
+                StoreComp = new MyProductStore(tradeComponents);
+                StoreIng = new MyProductStore(tradeIngots);
+                StoreOre = new MyProductStore(tradeOres);
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             

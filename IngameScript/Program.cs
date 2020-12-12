@@ -29,8 +29,12 @@ namespace IngameScript
         // Тег в названии контейнера для проверки на наличие ресурсов и торговли
         const string tagContainerForTrade = "";
 
-        // Список компонентов (меняем только указанные цены и закупку/продажу. Названия не трогать!)
         const bool tradeComponents = true; // Разрешить или запретить торговлю компонентами
+        const bool tradeIngots = true; // Разрешить или запретить торговлю слитками
+        const bool tradeOres = true; // Разрешить или запретить торговлю рудами
+        const bool tradeTools = true; // Разрешить или запретить всю торговлю инструментами
+
+        // Список компонентов (меняем только указанные цены и закупку/продажу. Названия не трогать!)
         static internal Dictionary<string, MyItem> Components = new Dictionary<string, MyItem>()
         {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
             ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true),      // Бронестекло
@@ -58,7 +62,6 @@ namespace IngameScript
             ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false),         // Ключи
         };
 
-        const bool tradeIngots = true; // Разрешить или запретить торговлю слитками
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {   //Слитки
             ["Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
@@ -73,7 +76,6 @@ namespace IngameScript
             ["Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
         };
 
-        const bool tradeOres = true; // Разрешить или запретить торговлю рудами
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {   //Руды
             ["Cobalt"] = new MyItem(1000, 300, true, 1, true),        // Кобальт
@@ -88,7 +90,6 @@ namespace IngameScript
             ["Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
         };
 
-        const bool tradeTools = true; // Разрешить или запретить всю торговлю инструментами
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
         {
             ["UltimateAutomaticRifleItem"] = new MyItem(0, 0, true, 0, true),   // Элитная виновка
@@ -113,10 +114,7 @@ namespace IngameScript
 
         public Program()
         {
-            AutoStore = new MyAutoStore(timeRefresh);
-            AutoStore.StoreComp.Trading = tradeComponents;
-            AutoStore.StoreIng.Trading = tradeIngots;
-            AutoStore.StoreOre.Trading = tradeOres;
+            AutoStore = new MyAutoStore(tradeComponents, tradeIngots, tradeOres, timeRefresh);
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
             if (AutoStore.StoreComp.Block != null)
             {

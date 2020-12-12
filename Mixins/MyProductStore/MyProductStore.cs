@@ -31,6 +31,11 @@ namespace IngameScript
             /// </summary>
             internal bool Trading { get; set; } = true;
 
+            internal MyProductStore(bool trading)
+            {
+                Trading = trading;
+            }
+
             internal MyProductStore(IMyStoreBlock StoreBlock)
             {
                 Block = StoreBlock;
