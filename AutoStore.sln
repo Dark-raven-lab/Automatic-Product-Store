@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IngameScript", "IngameScript\IngameScript.csproj", "{3C77A404-DA81-43FE-B88B-09D4500D1D8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Automatic product store", "IngameScript\Automatic product store.csproj", "{3C77A404-DA81-43FE-B88B-09D4500D1D8C}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyAutoStore", "Mixins\MyAutoStore\MyAutoStore.shproj", "{80F79B32-8C8A-43CD-9632-31581D706D3B}"
 EndProject
