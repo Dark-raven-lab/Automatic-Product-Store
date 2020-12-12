@@ -22,10 +22,10 @@ namespace IngameScript
         public class MyAutoStore
         {
             int _invenoryCounter = 0; // Счётчик для инвентаря
-            internal MyProductStore StoreComp; // Подсистема магазина компонентов
-            internal MyProductStore StoreIng; // Подсистема магазина слитков
-            internal MyProductStore StoreOre; // Подсистема магазина руды
-            //internal MyProductStore StoreTool; // Подсистема магазина инструментов
+            internal MyProductStore StoreComp { get; private set; } // Подсистема магазина компонентов
+            internal MyProductStore StoreIng { get; private set; } // Подсистема магазина слитков
+            internal MyProductStore StoreOre { get; private set; } // Подсистема магазина руды
+            //internal MyProductStore StoreTool { get; private set; } // Подсистема магазина инструментов
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
@@ -60,13 +60,13 @@ namespace IngameScript
             /// <param name="storeTags">теги для магазинов</param>
             internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string[] storeTags)
             {
-                List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
-                TerminalSystem.GetBlocksOfType(temp, x => x.CubeGrid == CubeGrid);
-                foreach (var storeBlock in temp)
+                List<IMyStoreBlock> AllStoreBlock = new List<IMyStoreBlock>();
+                TerminalSystem.GetBlocksOfType(AllStoreBlock, x => x.CubeGrid == CubeGrid);
+                foreach (var thisBlock in AllStoreBlock)
                 {
-                    if (storeBlock.CustomName.ToLower().Contains(storeTags[0].ToLower())) StoreComp = new MyProductStore(storeBlock);
-                    else if (storeBlock.CustomName.ToLower().Contains(storeTags[1].ToLower())) StoreIng = new MyProductStore(storeBlock);
-                    else if (storeBlock.CustomName.ToLower().Contains(storeTags[2].ToLower())) StoreOre = new MyProductStore(storeBlock);
+                    if (thisBlock.CustomName.ToLower().Contains(storeTags[0].ToLower())) StoreComp.Block = thisBlock;
+                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[1].ToLower())) StoreIng.Block = thisBlock;
+                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[2].ToLower())) StoreOre.Block = thisBlock;
                 }
                 //StoreTool = new MyProductStore(TerminalSystem, CubeGrid, storeName[3]);
             }

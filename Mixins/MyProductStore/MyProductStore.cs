@@ -24,7 +24,7 @@ namespace IngameScript
             /// <summary>
             /// Игровой блок магазина
             /// </summary>
-            internal IMyStoreBlock Block { get; private set; } = null;
+            internal IMyStoreBlock Block { get; set; } = null;
 
             /// <summary>
             /// Разрешить работу магазина или нет
@@ -65,9 +65,9 @@ namespace IngameScript
             /// <param name="MyObjectBuilder_name">Текстовое представление типа объекта</param>
             internal void PlaceOfferingsAndSales(Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name)
             {
-                if (!Trading || Block == null || Block.IsWorking) return;
+                if (!Trading || Block == null || !Block.IsWorking) return;
                 List<MyStoreQueryItem> storeItems = new List<MyStoreQueryItem>();// Список для товаров в магазине
-                Block.CustomData = "";
+                Block.CustomData = $"Товары обновлены {DateTime.Now.ToString("g")}";
                 Block.GetPlayerStoreItems(storeItems); // Получение списка из магазина
                 foreach (var Item in ItemsForSaleBuy) // Проверка каждого товара для выкладки на докупку/продажу
                 {

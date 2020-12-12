@@ -64,30 +64,30 @@ namespace IngameScript
 
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {   //Слитки
-            ["Cobalt"] = new MyItem(0, 0, true, 0, true),      // Кобальт
-            ["Gold"] = new MyItem(0, 0, true, 0, true),        // Золото
-            ["Stone"] = new MyItem(0, 0, true, 0, true),       // Камень
-            ["Iron"] = new MyItem(1000, 145, true, 1, true),        // Железо
-            ["Magnesium"] = new MyItem(0, 0, true, 0, true),   // Магний
-            ["Nickel"] = new MyItem(0, 0, true, 0, true),      // Никель
-            ["Platinum"] = new MyItem(0, 0, true, 0, true),    // Платина
-            ["Silicon"] = new MyItem(0, 0, true, 0, true),     // Кремний
-            ["Silver"] = new MyItem(0, 0, true, 0, true),      // Серебро
-            ["Uranium"] = new MyItem(0, 0, true, 0, true),     // Уран
+            ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true),      // Кобальт
+            ["Gold"] = new MyItem(1000, 23355, true, 24000, true),        // Золото
+            ["Iron"] = new MyItem(1000, 150, true, 170, true), // Железо
+            ["Magnesium"] = new MyItem(1000, 34054, true, 34500, true),   // Магний
+            ["Nickel"] = new MyItem(1000, 306, true, 310, true),      // Никель
+            ["Platinum"] = new MyItem(10, 122815, true, 123000, true),    // Платина
+            ["Silicon"] = new MyItem(1000, 173, true, 180, true),     // Кремний
+            ["Silver"] = new MyItem(1000, 2585, true, 2600, true),      // Серебро
+            ["Uranium"] = new MyItem(50, 80664, true, 80700, true),     // Уран
         };
 
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {   //Руды
-            ["Cobalt"] = new MyItem(1000, 300, true, 1, true),        // Кобальт
-            ["Gold"] = new MyItem(1000, 0, false, 2, true),          // Золото
-            ["Stone"] = new MyItem(1000, 0, false, 3, true),         // Камень
-            ["Iron"] = new MyItem(1000, 0, false, 4, true),          // Железо
-            ["Magnesium"] = new MyItem(0, 0, true, 0, true),     // Магний
-            ["Nickel"] = new MyItem(0, 0, true, 0, true),        // Никель
-            ["Platinum"] = new MyItem(0, 0, true, 0, true),      // Платина
-            ["Silicon"] = new MyItem(0, 0, true, 0, true),       // Кремний
-            ["Silver"] = new MyItem(0, 0, true, 0, true),        // Серебро
-            ["Uranium"] = new MyItem(0, 0, true, 0, true),       // Уран
+            ["Cobalt"] = new MyItem(1000, 300, true, 310, true),        // Кобальт
+            ["Gold"] = new MyItem(1000, 210, true, 230, true),          // Золото
+            ["Stone"] = new MyItem(1000, 10, true, 11, true),         // Камень
+            ["Iron"] = new MyItem(1000, 105, true, 110, true),          // Железо
+            ["Magnesium"] = new MyItem(1000, 210, true, 212, true),     // Магний
+            ["Nickel"] = new MyItem(1000, 100, true, 105, true),        // Никель
+            ["Platinum"] = new MyItem(1000, 420, true, 435, true),      // Платина
+            ["Silicon"] = new MyItem(1000, 100, true, 110, true),       // Кремний
+            ["Silver"] = new MyItem(1000, 210, true, 212, true),        // Серебро
+            ["Uranium"] = new MyItem(1000, 500, true, 505, true),       // Уран
+            ["Ice"] = new MyItem(1000, 50, true, 51, true),       // Лёд
         };
 
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
@@ -116,12 +116,9 @@ namespace IngameScript
         {
             AutoStore = new MyAutoStore(tradeComponents, tradeIngots, tradeOres, timeRefresh);
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
-            if (AutoStore.StoreComp.Block != null)
-            {
-                Runtime.UpdateFrequency = UpdateFrequency.Update10;
-                Echo("Скрипт запущен\n"); AvailableCommands();
-            }
-            else Echo("Магазин не найден\nВыполнение остановлено");
+            CheckingSystem();
+            Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            AvailableCommands();
         }
 
         public void Main(string arg, UpdateType updateSource)
@@ -134,6 +131,21 @@ namespace IngameScript
             if (arg != string.Empty) Arguments(arg);
         }
 
+        void CheckingSystem()
+        {
+            if (AutoStore.StoreComp.Block != null)
+                Me.CustomData = $"\nМагазин {AutoStore.StoreComp.Block.CustomName} подключен. Торговля: {tradeComponents}";
+            else
+                Me.CustomData = $"\nМагазин {storeType[0]} не подключен";
+            if (AutoStore.StoreIng.Block != null)
+                Me.CustomData += $"\nМагазин {AutoStore.StoreIng.Block.CustomName} подключен. Торговля: {tradeIngots}";
+            else
+                Me.CustomData += $"\nМагазин {storeType[1]} не подключен";
+            if (AutoStore.StoreOre.Block != null)
+                Me.CustomData += $"\nМагазин {AutoStore.StoreOre.Block.CustomName} подключен. Торговля: {tradeOres}";
+            else
+                Me.CustomData += $"\nМагазин {storeType[2]} не подключен";
+        }
         void Arguments(string arg)
         {
             if (arg.ToLower() == arguments[0])
