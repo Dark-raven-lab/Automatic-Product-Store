@@ -49,6 +49,12 @@ namespace IngameScript
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             
+            /// <summary>
+            /// Поиск и сохранение блоков магазина
+            /// </summary>
+            /// <param name="TerminalSystem"></param>
+            /// <param name="CubeGrid"></param>
+            /// <param name="storeTags">теги для магазинов</param>
             internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string[] storeTags)
             {
                 List<IMyStoreBlock> temp = new List<IMyStoreBlock>();
@@ -72,7 +78,6 @@ namespace IngameScript
             /// </summary>
             /// <param name="terminalSystem">Интерфейс для поиска блоков</param>
             /// <param name="Me">Программный блок</param>
-            
             internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group, string tagContainer, string tagExclude = "исключить")
             {
                 GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
@@ -88,7 +93,15 @@ namespace IngameScript
                 _containers = containers;
                 PlaceOffers();
             }
-            
+
+            /// <summary>
+            /// Получение блоков контейнера для учёта объектов
+            /// </summary>
+            /// <param name="terminalSystem">GridTerminalSystem</param>
+            /// <param name="Me">Me</param>
+            /// <param name="group">(опционально)группа блоков контейнеров</param>
+            /// <param name="tagContainer">(опционально) тег контейнеров</param>
+            /// <param name="tagExclude">(опционально) исключение контейнеров при общем поиске</param>
             void GetCargoBlocks(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group, string tagContainer, string tagExclude = "исключить")
             {
                 if (group != string.Empty)
@@ -100,14 +113,24 @@ namespace IngameScript
                 if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && !x.CustomName.ToLower().Contains(tagExclude.ToLower()));
             }
             
+            /// <summary>
+            /// Размещение товаров в магазине(-ах)
+            /// </summary>
             void PlaceOffers()
             {
                 if (_containers.Count == 0) return;
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
                     StoreComp.OfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
-                    StoreIng.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
-                    StoreOre.OfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
+                    if (StoreIng != null)
+                        StoreIng.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
+                    else 
+                        StoreComp.OfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин компонентов
+                    if (StoreOre != null)
+                        StoreOre.OfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
+                    else
+                        StoreComp.OfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин компонентов
+                    
                     //StoreComp.OfferingsAndSales(Tools, "MyObjectBuilder_Tool/"); // Выкладываем товары в магазин инструментов
                     // тут добавляем другие магазины
                     _containers.Clear(); // Чистим список контейнеров
