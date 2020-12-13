@@ -21,7 +21,7 @@ namespace IngameScript
     {
         public class MyAutoStore
         {
-            int _invenoryCounter = 0; // Счётчик для инвентаря
+            int _invenoryCounter = 0, _storeCount = 0; // Счётчик для инвентаря
             internal MyProductStore StoreComp { get; private set; } // Подсистема магазина компонентов
             internal MyProductStore StoreIng { get; private set; } // Подсистема магазина слитков
             internal MyProductStore StoreOre { get; private set; } // Подсистема магазина руды
@@ -35,7 +35,7 @@ namespace IngameScript
             internal string InfoOres { get { return _infoOres; } }
             //internal string InfoTools { get { return _infoTools; } }
 
-            internal string Warning { get; private set; }
+            internal string Warning { get; private set; } = "";
             
             /// <summary>
             /// Конструктор с поиском блока магазина
@@ -72,18 +72,13 @@ namespace IngameScript
             }
 
             /// <summary>
-            /// Возвращает true, если настало время обновлять торговые предложения
-            /// </summary>
-            internal bool TimeToUpgrade(){ { return TimeCheckStore.IsOut(); } }
-            
-            /// <summary>
             /// Обновление торговых предложений
             /// </summary>
             /// <param name="terminalSystem">Интерфейс для поиска блоков</param>
             /// <param name="Me">Программный блок</param>
             internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group, string tagContainer, string tagExclude = "исключить")
             {
-                GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
+                if (_containers.Count == 0) GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
                 PlaceOffers();
             }
             
@@ -121,17 +116,32 @@ namespace IngameScript
             /// </summary>
             void PlaceOffers()
             {
-                if (_containers.Count == 0) return;
+                if (_containers.Count == 0) { Warning = "Размещение отменено. Нет конейнеров"; return; }
                 if (SortingContentsInventories()) // Ждём окончания сортировки объектов
                 {
-                    StoreComp.PlaceOfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
-                    StoreIng.PlaceOfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
-                    StoreOre.PlaceOfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
-                    
+                    switch (_storeCount)
+                    {
+                        case 0:
+                            StoreComp.PlaceOfferingsAndSales(Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
+                            break;
+                        case 1:
+                            StoreIng.PlaceOfferingsAndSales(Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
+                            break;
+                        case 2:
+                            StoreOre.PlaceOfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            _storeCount = 0;
+                            _containers.Clear(); // Чистим список контейнеров
+                            TimeCheckStore.Start(); // Запускаем таймер
+                            return;
+                    }
+                    _storeCount++;
+
                     //StoreComp.OfferingsAndSales(Tools, "MyObjectBuilder_Tool/"); // Выкладываем товары в магазин инструментов
                     // тут добавляем другие магазины
-                    _containers.Clear(); // Чистим список контейнеров
-                    TimeCheckStore.Start(); // Запускаем таймер
                 }
             }
 
@@ -141,6 +151,7 @@ namespace IngameScript
             /// <returns>Возвращает true при окончании сортировки</returns>
             bool SortingContentsInventories()
             {
+                if (_storeCount != 0) return true;
                 if (_invenoryCounter == 0) foreach (var component in Components) { component.Value.Amount = 0; }
                 if (_invenoryCounter < _containers.Count)
                 {

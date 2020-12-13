@@ -109,7 +109,8 @@ namespace IngameScript
         readonly string[] arguments = new string[] {
             "магазин.разместить",
             "магазин.очистить",
-            "магазин.список"
+            "магазин.список",
+            "магазин.время"
         };
 
         public Program()
@@ -123,11 +124,15 @@ namespace IngameScript
 
         public void Main(string arg, UpdateType updateSource)
         {
-            string txt = $"Время выполнения: {Math.Round(Runtime.LastRunTimeMs, 3)}";
-            txt += $"\nОбновление магазина через {AutoStore.TimeCheckStore.RestTime} сек";
-            if (AutoStore.TimeToUpgrade()) // Ожидаем, пока не настанет время обновления магазина
+            if (AutoStore.TimeCheckStore.IsOut()) // Ожидаем, пока не настанет время обновления магазина
+            {
                 AutoStore.StoreUpdate(GridTerminalSystem, Me, groupContainersForTrade, tagContainerForTrade, tagExclude); // Главный метод обновления товаров в магазине
-            Me.GetSurface(0).WriteText(txt + "\n" + AutoStore.Warning);
+                Me.GetSurface(0).WriteText(AutoStore.Warning);
+                if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            }
+            else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
+            
+            Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
             if (arg != string.Empty) Arguments(arg);
         }
 
@@ -168,6 +173,11 @@ namespace IngameScript
                 Me.CustomData += AutoStore.StoreIng.GetOrdersAndOffers();
                 Me.CustomData += AutoStore.StoreOre.GetOrdersAndOffers();
                 Echo(" => \nТовары из магазина\nвыведны в данные ПБ");
+                AvailableCommands();
+            }
+            else if (arg.ToLower() == arguments[3])
+            {
+                Echo($"Обновление магазина через\n{AutoStore.TimeCheckStore.RestTime}");
                 AvailableCommands();
             }
             else AvailableCommands();
