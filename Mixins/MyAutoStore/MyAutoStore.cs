@@ -25,7 +25,7 @@ namespace IngameScript
             internal MyProductStore StoreComp { get; private set; } // Подсистема магазина компонентов
             internal MyProductStore StoreIng { get; private set; } // Подсистема магазина слитков
             internal MyProductStore StoreOre { get; private set; } // Подсистема магазина руды
-            //internal MyProductStore StoreTool { get; private set; } // Подсистема магазина инструментов
+            internal MyProductStore StoreTool { get; private set; } // Подсистема магазина инструментов
             internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
@@ -44,11 +44,12 @@ namespace IngameScript
             /// <param name="CubeGrid"></param>
             /// <param name="storeTags">Имя блока магазина</param>
             /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyAutoStore(bool tradeComponents, bool tradeIngots, bool tradeOres, int secondsForUpdate = 3600)
+            internal MyAutoStore(bool tradeComponents, bool tradeIngots, bool tradeOres, bool tradeTools, int secondsForUpdate = 3600)
             {
                 StoreComp = new MyProductStore(tradeComponents);
                 StoreIng = new MyProductStore(tradeIngots);
                 StoreOre = new MyProductStore(tradeOres);
+                StoreTool = new MyProductStore(tradeTools);
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
             
@@ -67,8 +68,8 @@ namespace IngameScript
                     if (thisBlock.CustomName.ToLower().Contains(storeTags[0].ToLower())) StoreComp.Block = thisBlock;
                     else if (thisBlock.CustomName.ToLower().Contains(storeTags[1].ToLower())) StoreIng.Block = thisBlock;
                     else if (thisBlock.CustomName.ToLower().Contains(storeTags[2].ToLower())) StoreOre.Block = thisBlock;
+                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[3].ToLower())) StoreTool.Block = thisBlock;
                 }
-                //StoreTool = new MyProductStore(TerminalSystem, CubeGrid, storeName[3]);
             }
 
             /// <summary>
@@ -130,7 +131,11 @@ namespace IngameScript
                         case 2:
                             StoreOre.PlaceOfferingsAndSales(Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
                             break;
-                        case 4:
+                        case 3:
+                            StoreTool.PlaceOfferingsAndSales(Tools, "MyObjectBuilder_PhysicalGunObject");
+                            StoreTool.PlaceOfferingsAndSales(Oxygen, "MyObjectBuilder_OxygenContainerObject");
+                            StoreTool.PlaceOfferingsAndSales(Hydrogen, "MyObjectBuilder_GasContainerObject");
+                            StoreTool.PlaceOfferingsAndSales(Ammo, "MyObjectBuilder_AmmoMagazine");
                             break;
                         default:
                             _storeCount = 0;
@@ -139,9 +144,6 @@ namespace IngameScript
                             return;
                     }
                     _storeCount++;
-
-                    //StoreComp.OfferingsAndSales(Tools, "MyObjectBuilder_Tool/"); // Выкладываем товары в магазин инструментов
-                    // тут добавляем другие магазины
                 }
             }
 
@@ -183,8 +185,14 @@ namespace IngameScript
                         Ingots[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     else if (item.Type.TypeId == "MyObjectBuilder_Ore" && Ores.ContainsKey(item.Type.SubtypeId))
                         Ores[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
-                    //else if (item.Type.TypeId == "MyObjectBuilder_Tool" && Tools.ContainsKey(item.Type.SubtypeId)) // Название не факт
-                    //    Tools[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_PhysicalGunObject" && Tools.ContainsKey(item.Type.SubtypeId))
+                        Tools[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_OxygenContainerObject" && Oxygen.ContainsKey(item.Type.SubtypeId))
+                        Oxygen[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_GasContainerObject" && Hydrogen.ContainsKey(item.Type.SubtypeId))
+                        Hydrogen[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_AmmoMagazine" && Ammo.ContainsKey(item.Type.SubtypeId))
+                        Ammo[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     else
                         Warning += $"\n[{item.Type.TypeId}/{item.Type.SubtypeId}] отсутствует в словарях";
                 }

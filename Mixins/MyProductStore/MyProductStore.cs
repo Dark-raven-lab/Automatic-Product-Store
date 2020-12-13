@@ -21,6 +21,8 @@ namespace IngameScript
     {
         public class MyProductStore
         {
+            List<MyStoreQueryItem> _storeItems = new List<MyStoreQueryItem>();// Список для товаров в магазине
+
             /// <summary>
             /// Игровой блок магазина
             /// </summary>
@@ -66,18 +68,18 @@ namespace IngameScript
             internal void PlaceOfferingsAndSales(Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name)
             {
                 if (!Trading || Block == null || !Block.IsWorking) return;
-                List<MyStoreQueryItem> storeItems = new List<MyStoreQueryItem>();// Список для товаров в магазине
+                _storeItems.Clear();// Очищаем список для товаров в магазине
                 Block.CustomData = $"Товары обновлены {DateTime.Now.ToString("g")}";
-                Block.GetPlayerStoreItems(storeItems); // Получение списка из магазина
+                Block.GetPlayerStoreItems(_storeItems); // Получение списка из магазина
                 foreach (var Item in ItemsForSaleBuy) // Проверка каждого товара для выкладки на докупку/продажу
                 {
                     // Если разрешена закупка этого товара и его мало на складе
                     if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount)
                     {
                         int dif = Item.Value.MaxAmount - Item.Value.Amount; // Считаем кол-во недостающего товара
-                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, dif, storeItems))  // Если такое объявление еще не создавали
+                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, dif, _storeItems))  // Если такое объявление еще не создавали
                         {
-                            FindAndDelete(MyObjectBuilder_name, Item.Key, storeItems); // Удаляем дубликаты объявления
+                            FindAndDelete(MyObjectBuilder_name, Item.Key, _storeItems); // Удаляем дубликаты объявления
                             InsertOrder(MyObjectBuilder_name + "/" + Item.Key, dif, Item.Value.BuyPrice); // Создаём ордер на закупку
                         }
                         else Block.CustomData += $"\n[No update] Закупка {Item.Key}:{dif} шт по цене {Item.Value.BuyPrice} кр. уже размещена";
@@ -86,15 +88,15 @@ namespace IngameScript
                     else if (Item.Value.AlowSale && Item.Value.Amount > Item.Value.MaxAmount)
                     {
                         int dif = Item.Value.Amount - Item.Value.MaxAmount; // Считаем кол-во лишнего товара
-                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, dif, storeItems)) // Если такое объявление еще не создавали
+                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, dif, _storeItems)) // Если такое объявление еще не создавали
                         {
-                            FindAndDelete(MyObjectBuilder_name, Item.Key, storeItems); // Удаляем дубликаты объявления
+                            FindAndDelete(MyObjectBuilder_name, Item.Key, _storeItems); // Удаляем дубликаты объявления
                             InsertOffer(MyObjectBuilder_name + "/" + Item.Key, dif, Item.Value.SalePrice); // Создаём ордер на продажу
                         }
                         else Block.CustomData += $"\n[No update] Продажа {MyObjectBuilder_name + Item.Key}:{dif} шт по цене {Item.Value.BuyPrice} кр. уже размещена";
                     }
                 }
-                storeItems.Clear();
+                _storeItems.Clear();
             }
 
             /// <summary>
@@ -103,11 +105,12 @@ namespace IngameScript
             /// <returns>Возвращает заказы и предложения в текстовом виде</returns>
             internal string GetOrdersAndOffers()
             {
-                List<MyStoreQueryItem> storeItems = new List<MyStoreQueryItem>();// Товары в магазине
+                _storeItems.Clear();
                 string txt;
-                Block.GetPlayerStoreItems(storeItems);
-                txt = $"\n{Block.CustomName} выложено {storeItems.Count} товаров";
-                foreach (var item in storeItems) { txt += $"\n{item.ItemId.SubtypeId} {item.Amount} шт по цене {item.PricePerUnit}"; }
+                Block.GetPlayerStoreItems(_storeItems);
+                txt = $"\n{Block.CustomName} выложено {_storeItems.Count} товаров";
+                foreach (var item in _storeItems) { txt += $"\n{item.ItemId.SubtypeId} {item.Amount} шт по цене {item.PricePerUnit}"; }
+                _storeItems.Clear();
                 return txt;
             }
 
@@ -116,12 +119,12 @@ namespace IngameScript
             /// </summary>
             internal void ClearAll()
             {
-                List<MyStoreQueryItem> storeItems = new List<MyStoreQueryItem>();// Товары в магазине
+                _storeItems.Clear();// Товары в магазине
                 Block.CustomData = "Очистка магазина";
-                Block.GetPlayerStoreItems(storeItems);
-                foreach (var item in storeItems) { Block.CancelStoreItem(item.Id); }
-                Block.CustomData += $"\n..удалено {storeItems.Count} позиций";
-                storeItems.Clear();
+                Block.GetPlayerStoreItems(_storeItems);
+                foreach (var item in _storeItems) { Block.CancelStoreItem(item.Id); }
+                Block.CustomData += $"\n..удалено {_storeItems.Count} позиций";
+                _storeItems.Clear();
             }
 
             /// <summary>

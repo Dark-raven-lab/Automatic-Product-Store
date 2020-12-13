@@ -63,7 +63,7 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
-        {   //Слитки
+        {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
             ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true),      // Кобальт
             ["Gold"] = new MyItem(1000, 23355, true, 24000, true),        // Золото
             ["Iron"] = new MyItem(1000, 150, true, 170, true), // Железо
@@ -76,7 +76,7 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
-        {   //Руды
+        {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
             ["Cobalt"] = new MyItem(1000, 300, true, 310, true),        // Кобальт
             ["Gold"] = new MyItem(1000, 210, true, 230, true),          // Золото
             ["Stone"] = new MyItem(1000, 10, true, 11, true),         // Камень
@@ -91,16 +91,30 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
-        {
-            ["UltimateAutomaticRifleItem"] = new MyItem(0, 0, true, 0, true),   // Элитная виновка
-            ["AngleGrinder4Item"] = new MyItem(0, 0, true, 0, true),            // Элитная пила
-            ["HandDrill4Item"] = new MyItem(0, 0, true, 0, true),               // Элитный бур
-            ["Welder4Item"] = new MyItem(0, 0, true, 0, true),                  // Элитная горелка
-            ["HydrogenBottle"] = new MyItem(0, 0, true, 0, true),               // Водородный баллон
-            ["OxygenBottle"] = new MyItem(0, 0, true, 0, true),                 // Кислородный баллон
-            ["Missile200mm"] = new MyItem(0, 0, true, 0, true),                 // Ракеты
-            ["NATO_25x184mm"] = new MyItem(0, 0, true, 0, true),                // Коробка патронов
-            ["NATO_5p56x45mm"] = new MyItem(0, 0, true, 0, true),               // Магазин с патронами
+        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+            ["UltimateAutomaticRifleItem"] = new MyItem(2, 385085, true, 400000, true),   // Элитная виновка
+            ["AngleGrinder4Item"] = new MyItem(2, 191220, true, 200000, true),            // Элитная пила
+            ["HandDrill4Item"] = new MyItem(2, 192637, true, 200000, true),               // Элитный бур
+            ["Welder4Item"] = new MyItem(2, 190240, true, 200000, true),                  // Элитный сварщик
+            ["RapidFireAutomaticRifleItem"] = new MyItem(2, 1712, true, 2000, true),  // Скорострельная винтовка
+            ["PreciseAutomaticRifleItem"] = new MyItem(2, 5215, true, 6000, true),   // Точная винтовка
+        };
+
+        static internal Dictionary<string, MyItem> Oxygen = new Dictionary<string, MyItem>()
+        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+            ["OxygenBottle"] = new MyItem(2, 13858, true, 14000, true)                 // Кислородный баллон
+        };
+
+        static internal Dictionary<string, MyItem> Hydrogen = new Dictionary<string, MyItem>()
+        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+            ["HydrogenBottle"] = new MyItem(2, 13858, true, 14000, true),               // Водородный баллон
+        };
+
+        static internal Dictionary<string, MyItem> Ammo = new Dictionary<string, MyItem>()
+        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+            ["Missile200mm"] = new MyItem(100, 38620, true, 40000, true),                 // Ракеты
+            ["NATO_25x184mm"] = new MyItem(50, 65844, true, 66000, true),                // Коробка патронов
+            ["NATO_5p56x45mm"] = new MyItem(50, 3169, true, 3300, true),               // Магазин с патронами
         };
 
         // ============ КОНЕЦ НАСТРОЕК ============
@@ -115,7 +129,7 @@ namespace IngameScript
 
         public Program()
         {
-            AutoStore = new MyAutoStore(tradeComponents, tradeIngots, tradeOres, timeRefresh);
+            AutoStore = new MyAutoStore(tradeComponents, tradeIngots, tradeOres, tradeTools, timeRefresh);
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
             CheckingSystem();
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -150,6 +164,10 @@ namespace IngameScript
                 Me.CustomData += $"\nМагазин {AutoStore.StoreOre.Block.CustomName} подключен. Торговля: {tradeOres}";
             else
                 Me.CustomData += $"\nМагазин {storeType[2]} не подключен";
+            if (AutoStore.StoreTool.Block != null)
+                Me.CustomData += $"\nМагазин {AutoStore.StoreTool.Block.CustomName} подключен. Торговля: {tradeTools}";
+            else
+                Me.CustomData += $"\nМагазин {storeType[3]} не подключен";
         }
         void Arguments(string arg)
         {
