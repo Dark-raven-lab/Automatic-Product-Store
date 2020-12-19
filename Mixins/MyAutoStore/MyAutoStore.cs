@@ -133,9 +133,9 @@ namespace IngameScript
                             break;
                         case 3:
                             StoreTool.PlaceOfferingsAndSales(Tools, "MyObjectBuilder_PhysicalGunObject");
-                            StoreTool.PlaceOfferingsAndSales(Oxygen, "MyObjectBuilder_OxygenContainerObject");
-                            StoreTool.PlaceOfferingsAndSales(Hydrogen, "MyObjectBuilder_GasContainerObject");
-                            StoreTool.PlaceOfferingsAndSales(Ammo, "MyObjectBuilder_AmmoMagazine");
+                            StoreTool.PlaceOfferingsAndSales(Oxygen, "MyObjectBuilder_OxygenContainerObject", true);
+                            StoreTool.PlaceOfferingsAndSales(Hydrogen, "MyObjectBuilder_GasContainerObject", true);
+                            StoreTool.PlaceOfferingsAndSales(Ammo, "MyObjectBuilder_AmmoMagazine", true);
                             break;
                         default:
                             _storeCount = 0;
