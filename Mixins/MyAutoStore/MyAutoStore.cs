@@ -31,7 +31,7 @@ namespace IngameScript
 
             string _infoComponents = "", _infoIngots = "", _infoOres = ""/*, _infoTools = ""*/;
             internal string ComponentsInfo { get { return _infoComponents; } }
-            internal string InfoIngots { get { return _infoIngots; } } 
+            internal string InfoIngots { get { return _infoIngots; } }
             internal string InfoOres { get { return _infoOres; } }
             //internal string InfoTools { get { return _infoTools; } }
 
