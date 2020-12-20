@@ -22,24 +22,19 @@ namespace IngameScript
         public class MyProductStore
         {
             List<MyStoreQueryItem> _storeItems = new List<MyStoreQueryItem>();// Список для товаров в магазине
-
             /// <summary>
             /// Игровой блок магазина
             /// </summary>
             internal IMyStoreBlock Block { get; set; } = null;
-
             /// <summary>
             /// Разрешить работу магазина или нет
             /// </summary>
             internal bool Trading { get; set; } = true;
-
             internal StringBuilder TradeInfo { get; private set; } = new StringBuilder();
-
             internal MyProductStore(bool trading)
             {
                 Trading = trading;
             }
-
             internal MyProductStore(IMyStoreBlock StoreBlock)
             {
                 Block = StoreBlock;
@@ -76,33 +71,63 @@ namespace IngameScript
                 Block.GetPlayerStoreItems(_storeItems); // Получение списка из магазина
                 foreach (var Item in ItemsForSaleBuy) // Проверка каждого товара для выкладки на докупку/продажу
                 {
-                    // Если разрешена закупка этого товара и его мало на складе
-                    if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount)
+                    if (Item.Value.Mode == StoreMode.Storage) // Режим поддержки на складе
                     {
-                        int dif = Item.Value.MaxAmount - Item.Value.Amount; // Считаем кол-во недостающего товара
-                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, dif, _storeItems))  // Если такое объявление еще не создавали
-                        {
-                            FindAndDelete(MyObjectBuilder_name, Item.Key, _storeItems); // Удаляем дубликаты объявления
-                            InsertOrder(MyObjectBuilder_name + "/" + Item.Key, dif, Item.Value.BuyPrice); // Создаём ордер на закупку
-                        }
-                        else TradeInfo.AppendLine($"[No update] Закупка {Item.Key} в кол-ве {dif}шт по цене {Item.Value.BuyPrice}кр. уже размещена");
+                        if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount) // Если разрешена закупка этого товара и его мало на складе
+                            CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount, true);
+                        else if (Item.Value.AlowSale && Item.Value.Amount > Item.Value.MaxAmount) // Если разрешена продажа этого товара и его много на складе
+                            CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount - Item.Value.MaxAmount, true);
                     }
-                    // Если разрешена продажа этого товара и его много на складе
-                    else if (Item.Value.AlowSale && Item.Value.Amount > Item.Value.MaxAmount)
+                    else if (Item.Value.Mode == StoreMode.Shop) // Режим магазина
                     {
-                        int dif = Item.Value.Amount - Item.Value.MaxAmount; // Считаем кол-во лишнего товара
-                        if (!OfferOrderIsPosted(MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, dif, _storeItems)) // Если такое объявление еще не создавали
-                        {
-                            FindAndDelete(MyObjectBuilder_name, Item.Key, _storeItems); // Удаляем дубликаты объявления
-                            InsertOffer(MyObjectBuilder_name + "/" + Item.Key, dif, Item.Value.SalePrice); // Создаём ордер на продажу
-                        }
-                        else TradeInfo.AppendLine($"[No update] Продажа {Item.Key} в кол-ве {dif}шт по цене {Item.Value.BuyPrice}кр. уже размещена");
+                        if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount) // Если разрешена закупка - закупаем недостаток
+                            CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount);
+                        if (Item.Value.AlowSale && Item.Value.Amount > 0) // Если разрешена продажа - продаём что есть на складах
+                            CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount);
                     }
                 }
                 if (append) Block.CustomData += TradeInfo.ToString();
                 else Block.CustomData = TradeInfo.ToString();
                 _storeItems.Clear();
                 TradeInfo.Clear();
+            }
+
+            /// <summary>
+            /// Создание закупки с валидацией и удалением дубликатов
+            /// </summary>
+            /// <param name="MyObjectBuilder_name"></param>
+            /// <param name="itemName">Названия товара</param>
+            /// <param name="BuyPrice">Цена закупки</param>
+            /// <param name="dif">Кол-во</param>
+            /// <param name="agressiveRemove">Удалить все дубликаты в продажах и закупках</param>
+            void CreateOrder(ref string MyObjectBuilder_name, string itemName, int BuyPrice, int dif, bool agressiveRemove = false)
+            {
+                if (!IsPosted(MyObjectBuilder_name, itemName, BuyPrice, dif, _storeItems))  // Если такое объявление еще не создавали
+                {
+                    if (agressiveRemove) RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems); // Удаляем все с таким же именем
+                    else RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems, BuyPrice); // Удаляем все с такой же ценой
+                    InsertOrder(MyObjectBuilder_name + "/" + itemName, dif, BuyPrice); // Создаём ордер на закупку
+                }
+                else TradeInfo.AppendLine($"[No update] Закупка {itemName} в кол-ве {dif}шт по цене {BuyPrice}кр. уже размещена");
+            }
+
+            /// <summary>
+            /// Создание продажи с валидацией и удалением дубликатов
+            /// </summary>
+            /// <param name="MyObjectBuilder_name"></param>
+            /// <param name="itemName">Названия товара</param>
+            /// <param name="SalePrice">Цена продажи</param>
+            /// <param name="dif">Кол-во</param>
+            /// <param name="agressiveRemove">Удалить все дубликаты в продажах и закупках</param>
+            void CreateOffer(ref string MyObjectBuilder_name, string itemName, int SalePrice, int dif, bool agressiveRemove = false)
+            {
+                if (!IsPosted(MyObjectBuilder_name, itemName, SalePrice, dif, _storeItems)) // Если такое объявление еще не создавали
+                {
+                    if (agressiveRemove) RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems); // Удаляем все с таким же именем
+                    else RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems, SalePrice); // Удаляем все с такой же ценой
+                    InsertOffer(MyObjectBuilder_name + "/" + itemName, dif, SalePrice); // Создаём ордер на продажу
+                }
+                else TradeInfo.AppendLine($"[No update] Продажа {itemName} в кол-ве {dif}шт по цене {SalePrice}кр. уже размещена");
             }
 
             /// <summary>
@@ -138,9 +163,16 @@ namespace IngameScript
             /// <param name="TypeId">Тип объекта товара "MyObjectBuilder_Component"</param>
             /// <param name="SubtypeId">Название товара "BulletproofGlass"</param>
             /// <param name="storeItems">Список объявлений из магазина</param>
-            void FindAndDelete(string TypeId, string SubtypeId, List<MyStoreQueryItem> storeItems)
+            /// <param name="price">Цена товара. 0 для удаления ВСЕХ дубликатов</param>
+            void RemoveDuplicates(string TypeId, string SubtypeId, List<MyStoreQueryItem> storeItems, int price = 0)
             {
-                foreach (var item in storeItems) { if (item.ItemId.TypeIdString == TypeId && item.ItemId.SubtypeId == SubtypeId) { TradeInfo.AppendLine($"[Remove] Товар {item.ItemId.TypeIdString} снят"); Block.CancelStoreItem(item.Id); } }
+                if (price == 0) foreach (var item in storeItems) {if (item.ItemId.TypeIdString == TypeId && item.ItemId.SubtypeId == SubtypeId) RemoveItem(item.ItemId.SubtypeId, item.Amount, item.PricePerUnit, item.Id); }
+                else foreach (var item in storeItems) { if (item.ItemId.TypeIdString == TypeId && item.ItemId.SubtypeId == SubtypeId && item.PricePerUnit == price) RemoveItem(item.ItemId.SubtypeId, item.Amount, item.PricePerUnit, item.Id); }
+            }
+
+            void RemoveItem(string SubtypeId, int Amount, int PricePerUnit, long Id)
+            {
+                TradeInfo.AppendLine($"[Remove] Товар {SubtypeId} {Amount} шт по цене {PricePerUnit} снят"); Block.CancelStoreItem(Id);
             }
 
             /// <summary>
@@ -152,7 +184,7 @@ namespace IngameScript
             /// <param name="amount">Колличество</param>
             /// <param name="storeItems">Список объявлений из магазина</param>
             /// <returns>Возвраает true, если объявление найдено</returns>
-            bool OfferOrderIsPosted(string TypeId, string SubtypeId, int price, int amount, List<MyStoreQueryItem> storeItems)
+            bool IsPosted(string TypeId, string SubtypeId, int price, int amount, List<MyStoreQueryItem> storeItems)
             {
                 return storeItems.Exists(x => x.ItemId.TypeIdString == TypeId && x.ItemId.SubtypeId == SubtypeId && x.PricePerUnit == price && x.Amount == amount);
             }
@@ -172,8 +204,8 @@ namespace IngameScript
                     Block.InsertOrder(new MyStoreItemDataSimple(definitionId, amount, price), out orderId); // Мы закупаем
                 else
                     TradeInfo.AppendLine($"ОШИБКА! [MyDefinitionId] НЕ создан. Вероятно указан не правильный itemType");
-                if (orderId != 0) TradeInfo.AppendLine($"[Create] Создан заказ [{itemTypeSubtype}] {amount} шт по цене {price}");
-                else TradeInfo.AppendLine($"ОШИБКА! Закупка [{itemTypeSubtype}] не создана. Проверьте имя товара");
+                if (orderId != 0) TradeInfo.AppendLine($"[Create] Закупка [{itemTypeSubtype}] {amount}шт по цене {price}кр");
+                else TradeInfo.AppendLine($"ОШИБКА! Закупка [{itemTypeSubtype}] не удалась! Проверьте имя товара");
             }
 
             /// <summary>
@@ -190,8 +222,8 @@ namespace IngameScript
                     Block.InsertOffer(new MyStoreItemDataSimple(definitionId, amount, price), out orderId); // Мы закупаем
                 else
                     TradeInfo.AppendLine($"ОШИБКА! Объект [MyDefinitionId] НЕ создан. Вероятно указан не правильный itemType/ & Subtype");
-                if (orderId != 0) TradeInfo.AppendLine($"[Create] Создано предложение продажи [{itemTypeSubtype}] {amount} шт по цене {price}");
-                else TradeInfo.AppendLine($"ОШИБКА! Продажа [{itemTypeSubtype}] не создан.Проверьте имя и цену[{price}]");
+                if (orderId != 0) TradeInfo.AppendLine($"[Create] Продажа [{itemTypeSubtype}] {amount}шт по цене {price}кр");
+                else TradeInfo.AppendLine($"ОШИБКА! Продажа [{itemTypeSubtype}] не удалась! Проверьте имя и цену[{price}]");
             }
         }
     }
