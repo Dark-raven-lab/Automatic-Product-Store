@@ -37,95 +37,97 @@ namespace IngameScript
         // Списки компонентов и т.д. (меняем только указанные цены и закупку/продажу и режим. Названия не трогать!)
         /* Разберём пример: ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true, StoreMode.Storage),
          * Меняем только то что в круглых скобках - (235, 830, true, 1065, true, StoreMode.Storage)
-         * Первое это граница до которой закупать или продавать
-         * Второе это цена закупки магазином (может быть любой)
-         * Третье это включить или выключить закупку.(true или false)
-         * Четвертое это цена продажи магазином (не можем быть меньше определенной границы)
-         * Пятое это включить или выключить продажу
-         * Шестое это режим торговли данным товаром. Есть 2 режима
-         *  StoreMode.Storage - поддержание нужного уровня на складе. Закупка, если товара мало и продажа, если много.
-         *  StoreMode.Shop - одновременная закупки и продажа. Продаём всё что есть на складе и закупаем до указанной границы
+         * 235 это граница до которой закупать или продавать
+         * 830 это цена закупки магазином (может быть любой)
+         * true это включить или выключить закупку.(true или false)
+         * 1065 это цена продажи магазином (не можем быть меньше определенной границы)
+         * true это включить или выключить продажу
+         * StoreMode.Storage это режим торговли данным товаром. Есть 2 режима
+         *  TradeModel.Storage - поддержание нужного уровня на складе.
+         *  Закупка, если товара ниже границы и продажа, если его больше границы.
+         *  TradeModel.Shop - одновременная закупки и продажа.
+         *  Продаём всё что есть на складе и закупаем до указанной границы. Больше подходит для замкнутого магазина
          */
         static internal Dictionary<string, MyItem> Components = new Dictionary<string, MyItem>()
         {
-            ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true, StoreMode.Storage),      // Бронестекло
-            ["Canvas"] = new MyItem(10, 2500, true, 3105, true, StoreMode.Storage),                // Парашут
-            ["Computer"] = new MyItem(400, 45, true, 47, true, StoreMode.Storage),                 // Компьютеры
-            ["Construction"] = new MyItem(1000, 430, true, 498, true, StoreMode.Storage),          // Строительные компоненты
-            ["Detector"] = new MyItem(30, 2236, true, 2743, true, StoreMode.Storage),              // Компоненты детектора
-            ["Display"] = new MyItem(30, 381, true, 416, true, StoreMode.Storage),                 // Экраны
-            ["Explosives"] = new MyItem(0, 33633, false, 37475, false, StoreMode.Storage),         // Взрывчатка
-            ["Girder"] = new MyItem(100, 360, true, 374, true, StoreMode.Storage),                 // Балка
-            ["GravityGenerator"] = new MyItem(0, 150000, false, 385875, false, StoreMode.Storage), // Компоненты гравигенератора
-            ["InteriorPlate"] = new MyItem(200, 154, true, 187, true, StoreMode.Storage),          // Внутренние пластины
-            ["LargeTube"] = new MyItem(200, 1702, true, 2079, true, StoreMode.Storage),            // Большие трубы
-            ["Medical"] = new MyItem(0, 40000, false, 43072, false, StoreMode.Storage),             // Медицинские компоненты
-            ["MetalGrid"] = new MyItem(300, 3265, true, 3625, true, StoreMode.Storage),            // Компоненты решетки
-            ["Motor"] = new MyItem(150, 2008, true, 2228, true, StoreMode.Storage),                // Моторы
-            ["PowerCell"] = new MyItem(50, 1078, true, 1180, true, StoreMode.Storage),             // Батарейки
-            ["RadioCommunication"] = new MyItem(30, 515, true, 710, true, StoreMode.Storage),      //Радиоантенна
-            ["Reactor"] = new MyItem(0, 6410, false, 8478, false, StoreMode.Storage),              // Компоненты реактора
-            ["SmallTube"] = new MyItem(300, 267, true, 311, true, StoreMode.Storage),              // Малые трубки
-            ["SolarCell"] = new MyItem(0, 641, false, 849, false, StoreMode.Storage),              // Солнечные панели
-            ["SteelPlate"] = new MyItem(2500, 1236, true, 1311, true, StoreMode.Storage),          // Стальные пластины
-            ["Superconductor"] = new MyItem(0, 21354, false, 26524, false, StoreMode.Storage),     // Сверхпроводник
-            ["Thrust"] = new MyItem(0, 41325, false, 45068, false, StoreMode.Storage),             // Компоненты двигателей
-            ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false, StoreMode.Storage),         // Ключи
+            ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true, TradeModel.Storage),      // Бронестекло
+            ["Canvas"] = new MyItem(10, 2500, true, 3105, true, TradeModel.Storage),                // Парашут
+            ["Computer"] = new MyItem(400, 45, true, 47, true, TradeModel.Storage),                 // Компьютеры
+            ["Construction"] = new MyItem(1000, 430, true, 498, true, TradeModel.Storage),          // Строительные компоненты
+            ["Detector"] = new MyItem(30, 2236, true, 2743, true, TradeModel.Storage),              // Компоненты детектора
+            ["Display"] = new MyItem(30, 381, true, 416, true, TradeModel.Storage),                 // Экраны
+            ["Explosives"] = new MyItem(0, 33633, false, 37475, false, TradeModel.Storage),         // Взрывчатка
+            ["Girder"] = new MyItem(100, 360, true, 374, true, TradeModel.Storage),                 // Балка
+            ["GravityGenerator"] = new MyItem(0, 150000, false, 385875, false, TradeModel.Storage), // Компоненты гравигенератора
+            ["InteriorPlate"] = new MyItem(200, 154, true, 187, true, TradeModel.Storage),          // Внутренние пластины
+            ["LargeTube"] = new MyItem(200, 1702, true, 2079, true, TradeModel.Storage),            // Большие трубы
+            ["Medical"] = new MyItem(0, 40000, false, 43072, false, TradeModel.Storage),             // Медицинские компоненты
+            ["MetalGrid"] = new MyItem(300, 3265, true, 3625, true, TradeModel.Storage),            // Компоненты решетки
+            ["Motor"] = new MyItem(150, 2008, true, 2228, true, TradeModel.Storage),                // Моторы
+            ["PowerCell"] = new MyItem(50, 1078, true, 1180, true, TradeModel.Storage),             // Батарейки
+            ["RadioCommunication"] = new MyItem(30, 515, true, 710, true, TradeModel.Storage),      //Радиоантенна
+            ["Reactor"] = new MyItem(0, 6410, false, 8478, false, TradeModel.Storage),              // Компоненты реактора
+            ["SmallTube"] = new MyItem(300, 267, true, 311, true, TradeModel.Storage),              // Малые трубки
+            ["SolarCell"] = new MyItem(0, 641, false, 849, false, TradeModel.Storage),              // Солнечные панели
+            ["SteelPlate"] = new MyItem(2500, 1236, true, 1311, true, TradeModel.Storage),          // Стальные пластины
+            ["Superconductor"] = new MyItem(0, 21354, false, 26524, false, TradeModel.Storage),     // Сверхпроводник
+            ["Thrust"] = new MyItem(0, 41325, false, 45068, false, TradeModel.Storage),             // Компоненты двигателей
+            ["ZoneChip"] = new MyItem(0, 105000, false, 100000, false, TradeModel.Storage),         // Ключи
         };
 
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true, StoreMode.Storage),      // Кобальт
-            ["Gold"] = new MyItem(1000, 23355, true, 24000, true, StoreMode.Storage),        // Золото
-            ["Iron"] = new MyItem(1000, 150, true, 170, true, StoreMode.Storage), // Железо
-            ["Magnesium"] = new MyItem(1000, 34054, true, 34500, true, StoreMode.Storage),   // Магний
-            ["Nickel"] = new MyItem(1000, 306, true, 310, true, StoreMode.Storage),      // Никель
-            ["Platinum"] = new MyItem(10, 122815, true, 123000, true, StoreMode.Storage),    // Платина
-            ["Silicon"] = new MyItem(1000, 173, true, 180, true, StoreMode.Storage),     // Кремний
-            ["Silver"] = new MyItem(1000, 2585, true, 2600, true, StoreMode.Storage),      // Серебро
-            ["Uranium"] = new MyItem(50, 80664, true, 80700, true, StoreMode.Storage),     // Уран
+            ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true, TradeModel.Storage),      // Кобальт
+            ["Gold"] = new MyItem(1000, 23355, true, 24000, true, TradeModel.Storage),        // Золото
+            ["Iron"] = new MyItem(1000, 150, true, 170, true, TradeModel.Storage), // Железо
+            ["Magnesium"] = new MyItem(1000, 34054, true, 34500, true, TradeModel.Storage),   // Магний
+            ["Nickel"] = new MyItem(1000, 306, true, 310, true, TradeModel.Storage),      // Никель
+            ["Platinum"] = new MyItem(10, 122815, true, 123000, true, TradeModel.Storage),    // Платина
+            ["Silicon"] = new MyItem(1000, 173, true, 180, true, TradeModel.Storage),     // Кремний
+            ["Silver"] = new MyItem(1000, 2585, true, 2600, true, TradeModel.Storage),      // Серебро
+            ["Uranium"] = new MyItem(50, 80664, true, 80700, true, TradeModel.Storage),     // Уран
         };
 
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["Cobalt"] = new MyItem(1000, 300, true, 310, true, StoreMode.Storage),        // Кобальт
-            ["Gold"] = new MyItem(1000, 210, true, 230, true, StoreMode.Storage),          // Золото
-            ["Stone"] = new MyItem(1000, 10, true, 11, true, StoreMode.Storage),         // Камень
-            ["Iron"] = new MyItem(1000, 105, true, 110, true, StoreMode.Storage),          // Железо
-            ["Magnesium"] = new MyItem(1000, 210, true, 212, true, StoreMode.Storage),     // Магний
-            ["Nickel"] = new MyItem(1000, 100, true, 105, true, StoreMode.Storage),        // Никель
-            ["Platinum"] = new MyItem(1000, 420, true, 435, true, StoreMode.Storage),      // Платина
-            ["Silicon"] = new MyItem(1000, 100, true, 110, true, StoreMode.Storage),       // Кремний
-            ["Silver"] = new MyItem(1000, 210, true, 212, true, StoreMode.Storage),        // Серебро
-            ["Uranium"] = new MyItem(1000, 500, true, 505, true, StoreMode.Storage),       // Уран
-            ["Ice"] = new MyItem(1000, 50, true, 51, true, StoreMode.Storage),       // Лёд
+            ["Cobalt"] = new MyItem(1000, 300, true, 310, true, TradeModel.Storage),        // Кобальт
+            ["Gold"] = new MyItem(1000, 210, true, 230, true, TradeModel.Storage),          // Золото
+            ["Stone"] = new MyItem(1000, 10, true, 11, true, TradeModel.Storage),         // Камень
+            ["Iron"] = new MyItem(1000, 105, true, 110, true, TradeModel.Storage),          // Железо
+            ["Magnesium"] = new MyItem(1000, 210, true, 212, true, TradeModel.Storage),     // Магний
+            ["Nickel"] = new MyItem(1000, 100, true, 105, true, TradeModel.Storage),        // Никель
+            ["Platinum"] = new MyItem(1000, 420, true, 435, true, TradeModel.Storage),      // Платина
+            ["Silicon"] = new MyItem(1000, 100, true, 110, true, TradeModel.Storage),       // Кремний
+            ["Silver"] = new MyItem(1000, 210, true, 212, true, TradeModel.Storage),        // Серебро
+            ["Uranium"] = new MyItem(1000, 500, true, 505, true, TradeModel.Storage),       // Уран
+            ["Ice"] = new MyItem(1000, 50, true, 51, true, TradeModel.Storage),       // Лёд
         };
 
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
         {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["UltimateAutomaticRifleItem"] = new MyItem(2, 385085, true, 400000, true, StoreMode.Storage),   // Элитная виновка
-            ["AngleGrinder4Item"] = new MyItem(2, 191220, true, 200000, true, StoreMode.Storage),            // Элитная пила
-            ["HandDrill4Item"] = new MyItem(2, 192637, true, 200000, true, StoreMode.Storage),               // Элитный бур
-            ["Welder4Item"] = new MyItem(2, 190240, true, 200000, true, StoreMode.Storage),                  // Элитный сварщик
-            ["RapidFireAutomaticRifleItem"] = new MyItem(2, 1712, true, 2000, true, StoreMode.Storage),  // Скорострельная винтовка
-            ["PreciseAutomaticRifleItem"] = new MyItem(2, 5215, true, 6000, true, StoreMode.Storage),   // Точная винтовка
+            ["UltimateAutomaticRifleItem"] = new MyItem(2, 385085, true, 400000, true, TradeModel.Storage),   // Элитная виновка
+            ["AngleGrinder4Item"] = new MyItem(2, 191220, true, 200000, true, TradeModel.Storage),            // Элитная пила
+            ["HandDrill4Item"] = new MyItem(2, 192637, true, 200000, true, TradeModel.Storage),               // Элитный бур
+            ["Welder4Item"] = new MyItem(2, 190240, true, 200000, true, TradeModel.Storage),                  // Элитный сварщик
+            ["RapidFireAutomaticRifleItem"] = new MyItem(2, 1712, true, 2000, true, TradeModel.Storage),  // Скорострельная винтовка
+            ["PreciseAutomaticRifleItem"] = new MyItem(2, 5215, true, 6000, true, TradeModel.Storage),   // Точная винтовка
         };
 
         static internal Dictionary<string, MyItem> Oxygen = new Dictionary<string, MyItem>()
         {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["OxygenBottle"] = new MyItem(2, 13858, true, 14000, true, StoreMode.Storage)                 // Кислородный баллон
+            ["OxygenBottle"] = new MyItem(2, 13858, true, 14000, true, TradeModel.Storage)                 // Кислородный баллон
         };
 
         static internal Dictionary<string, MyItem> Hydrogen = new Dictionary<string, MyItem>()
         {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["HydrogenBottle"] = new MyItem(2, 13858, true, 14000, true, StoreMode.Storage),               // Водородный баллон
+            ["HydrogenBottle"] = new MyItem(2, 13858, true, 14000, true, TradeModel.Storage),               // Водородный баллон
         };
 
         static internal Dictionary<string, MyItem> Ammo = new Dictionary<string, MyItem>()
         {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
-            ["Missile200mm"] = new MyItem(100, 38620, true, 40000, true, StoreMode.Storage),                 // Ракеты
-            ["NATO_25x184mm"] = new MyItem(50, 65844, true, 66000, true, StoreMode.Storage),                // Коробка патронов
-            ["NATO_5p56x45mm"] = new MyItem(50, 3169, true, 3300, true, StoreMode.Storage),               // Магазин с патронами
+            ["Missile200mm"] = new MyItem(100, 38620, true, 40000, true, TradeModel.Storage),                 // Ракеты
+            ["NATO_25x184mm"] = new MyItem(50, 65844, true, 66000, true, TradeModel.Storage),                // Коробка патронов
+            ["NATO_5p56x45mm"] = new MyItem(50, 3169, true, 3300, true, TradeModel.Storage),               // Магазин с патронами
         };
 
         // ============ КОНЕЦ НАСТРОЕК ============
@@ -139,7 +141,7 @@ namespace IngameScript
         };
 
         // Режим работы с товаром
-        public enum StoreMode : byte { Shop, Storage }
+        public enum TradeModel : byte { Shop, Storage }
 
         public Program()
         {
