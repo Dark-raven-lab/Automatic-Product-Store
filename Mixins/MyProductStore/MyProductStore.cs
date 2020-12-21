@@ -71,14 +71,14 @@ namespace IngameScript
                 Block.GetPlayerStoreItems(_storeItems); // Получение списка из магазина
                 foreach (var Item in ItemsForSaleBuy) // Проверка каждого товара для выкладки на докупку/продажу
                 {
-                    if (Item.Value.Mode == StoreMode.Storage) // Режим поддержки на складе
+                    if (Item.Value.Mode == TradeModel.Storage) // Режим поддержки на складе
                     {
                         if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount) // Если разрешена закупка этого товара и его мало на складе
                             CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount, true);
                         else if (Item.Value.AlowSale && Item.Value.Amount > Item.Value.MaxAmount) // Если разрешена продажа этого товара и его много на складе
                             CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount - Item.Value.MaxAmount, true);
                     }
-                    else if (Item.Value.Mode == StoreMode.Shop) // Режим магазина
+                    else if (Item.Value.Mode == TradeModel.Shop) // Режим магазина
                     {
                         if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount) // Если разрешена закупка - закупаем недостаток
                             CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount);

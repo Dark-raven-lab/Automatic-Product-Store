@@ -46,17 +46,18 @@ namespace IngameScript
             /// </summary>
             internal bool AlowBuy { get; set; }
 
-            public StoreMode Mode { get; set; }
+            public TradeModel Mode { get; set; }
 
             /// <summary>
             /// 
             /// </summary>
             /// <param name="MaxAmount">Граница товара</param>
             /// <param name="BuyPrice">Цена покупки товара</param>
-            /// <param name="AlowBuy">Разрешить покупку ?</param>
+            /// <param name="AlowBuy">Разрешить покупку</param>
             /// <param name="SalePrice">Цена продажи товара</param>
-            /// <param name="AlowSale">Разрешить продажу ?</param>
-            public MyItem(int MaxAmount = 0, int BuyPrice = 1, bool AlowBuy = false, int SalePrice = 2, bool AlowSale = false, StoreMode storeMode = StoreMode.Storage)
+            /// <param name="AlowSale">Разрешить продажу</param>
+            /// <param name="storeMode">Режим торговли данным предметом</param>
+            public MyItem(int MaxAmount = 0, int BuyPrice = 1, bool AlowBuy = false, int SalePrice = 2, bool AlowSale = false, TradeModel storeMode = TradeModel.Storage)
             {
                 this.MaxAmount = MaxAmount;
                 this.BuyPrice = BuyPrice;
