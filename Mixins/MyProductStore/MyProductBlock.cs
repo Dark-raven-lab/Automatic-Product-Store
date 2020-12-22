@@ -19,7 +19,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class MyProductStore
+        public class MyProductBlock
         {
             List<MyStoreQueryItem> _storeItems = new List<MyStoreQueryItem>();// Список для товаров в магазине
             /// <summary>
@@ -31,15 +31,15 @@ namespace IngameScript
             /// </summary>
             internal bool Trading { get; set; } = true;
             internal StringBuilder TradeInfo { get; private set; } = new StringBuilder();
-            internal MyProductStore(bool trading)
+            internal MyProductBlock(bool trading)
             {
                 Trading = trading;
             }
-            internal MyProductStore(IMyStoreBlock StoreBlock)
+            internal MyProductBlock(IMyStoreBlock StoreBlock)
             {
                 Block = StoreBlock;
             }
-            internal MyProductStore(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string nameStore)
+            internal MyProductBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, string nameStore)
             {
                 GetBlocks(TerminalSystem, CubeGrid, nameStore);
             }
@@ -63,7 +63,7 @@ namespace IngameScript
             /// <param name="ItemsForSaleBuy">Список объектов для размещения</param>
             /// <param name="MyObjectBuilder_name">Текстовое представление типа объекта</param>
             /// <param name="append">Дописать или заменить информацию о работе магазина в "мои данные" блока</param>
-            internal void PlaceOfferingsAndSales(Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name, bool append = false)
+            internal void PlaceOfferingsAndSales(ref Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name, bool append = false)
             {
                 if (!Trading || Block == null || !Block.IsWorking) return;
                 _storeItems.Clear();// Очищаем список для товаров в магазине
@@ -102,10 +102,10 @@ namespace IngameScript
             /// <param name="agressiveRemove">Удалить все дубликаты в продажах и закупках</param>
             void CreateOrder(ref string MyObjectBuilder_name, string itemName, int BuyPrice, int dif, bool agressiveRemove = false)
             {
-                if (!IsPosted(MyObjectBuilder_name, itemName, BuyPrice, dif, _storeItems))  // Если такое объявление еще не создавали
+                if (!IsPosted(MyObjectBuilder_name, itemName, BuyPrice, dif))  // Если такое объявление еще не создавали
                 {
-                    if (agressiveRemove) RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems); // Удаляем все с таким же именем
-                    else RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems, BuyPrice); // Удаляем все с такой же ценой
+                    if (agressiveRemove) RemoveDuplicates(ref MyObjectBuilder_name, ref itemName, _storeItems); // Удаляем все с таким же именем
+                    else RemoveDuplicates(ref MyObjectBuilder_name, ref itemName, _storeItems, BuyPrice); // Удаляем все с такой же ценой
                     InsertOrder(MyObjectBuilder_name + "/" + itemName, dif, BuyPrice); // Создаём ордер на закупку
                 }
                 else TradeInfo.AppendLine($"[No update] Закупка {itemName} в кол-ве {dif}шт по цене {BuyPrice}кр. уже размещена");
@@ -121,10 +121,10 @@ namespace IngameScript
             /// <param name="agressiveRemove">Удалить все дубликаты в продажах и закупках</param>
             void CreateOffer(ref string MyObjectBuilder_name, string itemName, int SalePrice, int dif, bool agressiveRemove = false)
             {
-                if (!IsPosted(MyObjectBuilder_name, itemName, SalePrice, dif, _storeItems)) // Если такое объявление еще не создавали
+                if (!IsPosted(MyObjectBuilder_name, itemName, SalePrice, dif)) // Если такое объявление еще не создавали
                 {
-                    if (agressiveRemove) RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems); // Удаляем все с таким же именем
-                    else RemoveDuplicates(MyObjectBuilder_name, itemName, _storeItems, SalePrice); // Удаляем все с такой же ценой
+                    if (agressiveRemove) RemoveDuplicates(ref MyObjectBuilder_name, ref itemName, _storeItems); // Удаляем все с таким же именем
+                    else RemoveDuplicates(ref MyObjectBuilder_name, ref itemName, _storeItems, SalePrice); // Удаляем все с такой же ценой
                     InsertOffer(MyObjectBuilder_name + "/" + itemName, dif, SalePrice); // Создаём ордер на продажу
                 }
                 else TradeInfo.AppendLine($"[No update] Продажа {itemName} в кол-ве {dif}шт по цене {SalePrice}кр. уже размещена");
@@ -164,7 +164,7 @@ namespace IngameScript
             /// <param name="SubtypeId">Название товара "BulletproofGlass"</param>
             /// <param name="storeItems">Список объявлений из магазина</param>
             /// <param name="price">Цена товара. 0 для удаления ВСЕХ дубликатов</param>
-            void RemoveDuplicates(string TypeId, string SubtypeId, List<MyStoreQueryItem> storeItems, int price = 0)
+            void RemoveDuplicates(ref string TypeId, ref string SubtypeId, List<MyStoreQueryItem> storeItems, int price = 0)
             {
                 if (price == 0) foreach (var item in storeItems) {if (item.ItemId.TypeIdString == TypeId && item.ItemId.SubtypeId == SubtypeId) RemoveItem(item.ItemId.SubtypeId, item.Amount, item.PricePerUnit, item.Id); }
                 else foreach (var item in storeItems) { if (item.ItemId.TypeIdString == TypeId && item.ItemId.SubtypeId == SubtypeId && item.PricePerUnit == price) RemoveItem(item.ItemId.SubtypeId, item.Amount, item.PricePerUnit, item.Id); }
@@ -184,9 +184,9 @@ namespace IngameScript
             /// <param name="amount">Колличество</param>
             /// <param name="storeItems">Список объявлений из магазина</param>
             /// <returns>Возвраает true, если объявление найдено</returns>
-            bool IsPosted(string TypeId, string SubtypeId, int price, int amount, List<MyStoreQueryItem> storeItems)
+            bool IsPosted(string TypeId, string SubtypeId, int price, int amount)
             {
-                return storeItems.Exists(x => x.ItemId.TypeIdString == TypeId && x.ItemId.SubtypeId == SubtypeId && x.PricePerUnit == price && x.Amount == amount);
+                return _storeItems.Exists(x => x.ItemId.TypeIdString == TypeId && x.ItemId.SubtypeId == SubtypeId && x.PricePerUnit == price && x.Amount == amount);
             }
 
             /// <summary>

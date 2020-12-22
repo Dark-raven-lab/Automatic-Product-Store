@@ -21,32 +21,32 @@ namespace IngameScript
         };
 
         // ============ ОПЦИОНАЛЬНЫЕ НАСТРОЙКИ МАГАЗИНА ============ 
-        const int timeRefresh = 3600; // Интервал для обновления товаров в магазине в секундах (3600 сек = 1 час)
+        int timeRefresh = 3600; // Интервал для обновления товаров в магазине в секундах (3600 сек = 1 час)
         // Тег в названии блоков для исключения из работы скрипта (не работает для магазинов)
-        const string tagExclude = "Исключить";
+        string tagExclude = "Исключить";
         // Имя группы контейнеров для проверки ресурсов и торговли (заранее создать группу)
-        const string groupContainersForTrade = "";
+        string groupContainersForTrade = "";
         // Тег в названии контейнера для проверки на наличие ресурсов и торговли
-        const string tagContainerForTrade = "";
+        string tagContainerForTrade = "";
 
-        const bool tradeComponents = true; // Разрешить или запретить торговлю компонентами
-        const bool tradeIngots = true; // Разрешить или запретить торговлю слитками
-        const bool tradeOres = true; // Разрешить или запретить торговлю рудами
-        const bool tradeTools = true; // Разрешить или запретить всю торговлю инструментами
+        bool tradeComponents = true; // Разрешить или запретить торговлю компонентами
+        bool tradeIngots = true; // Разрешить или запретить торговлю слитками
+        bool tradeOres = true; // Разрешить или запретить торговлю рудами
+        bool tradeTools = true; // Разрешить или запретить всю торговлю инструментами
 
-        // Списки компонентов и т.д. (меняем только указанные цены и закупку/продажу и режим. Названия не трогать!)
-        /* Разберём пример: ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true, StoreMode.Storage),
+        /* Списки компонентов и т.д. (меняем только указанные цены и закупку/продажу и режим. Названия не трогать!)
+         * Разберём пример: ["BulletproofGlass"] = new MyItem(235, 830, true, 1065, true, StoreMode.Storage),
          * Меняем только то что в круглых скобках - (235, 830, true, 1065, true, StoreMode.Storage)
-         * 235 это граница до которой закупать или продавать
-         * 830 это цена закупки магазином (может быть любой)
-         * true это включить или выключить закупку.(true или false)
-         * 1065 это цена продажи магазином (не можем быть меньше определенной границы)
-         * true это включить или выключить продажу
-         * StoreMode.Storage это режим торговли данным товаром. Есть 2 режима
-         *  TradeModel.Storage - поддержание нужного уровня на складе.
-         *  Закупка, если товара ниже границы и продажа, если его больше границы.
+         * Первый параметр (235) указывает желаемое кол-во товара на складе или границу товара
+         * Второй параметр (830) указывает цену закупки магазином до границы (может быть любой)
+         * Третий парметр (true) включает или выключает закупку товара магазином (true или false)
+         * Четвертый параметр (1065) указывает цену продажи товара магазином (не можем быть меньше определенной границы. см в самом блоке магазина)
+         * Пятый параметр (true) включает или выключает продажу товара магазином
+         * Шестой параметр (StoreMode.Storage) указывает режим торговли товаром. Есть 2 режима на выбор:
+         *  TradeModel.Storage - поддержание нужного уровня товара на складе.
+         *  Закупка, если кол-во товара ниже границы и продажа, если его больше границы.
          *  TradeModel.Shop - одновременная закупки и продажа.
-         *  Продаём всё что есть на складе и закупаем до указанной границы. Больше подходит для замкнутого магазина
+         *  Продаём всё что есть на складе и закупаем до указанной границы (больше подходит для замкнутого магазина)
          */
         static internal Dictionary<string, MyItem> Components = new Dictionary<string, MyItem>()
         {
@@ -89,7 +89,7 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
-        {   // Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+        {
             ["Cobalt"] = new MyItem(1000, 300, true, 310, true, TradeModel.Storage),        // Кобальт
             ["Gold"] = new MyItem(1000, 210, true, 230, true, TradeModel.Storage),          // Золото
             ["Stone"] = new MyItem(1000, 10, true, 11, true, TradeModel.Storage),         // Камень
@@ -104,7 +104,7 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Tools = new Dictionary<string, MyItem>()
-        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+        {
             ["UltimateAutomaticRifleItem"] = new MyItem(2, 385085, true, 400000, true, TradeModel.Storage),   // Элитная виновка
             ["AngleGrinder4Item"] = new MyItem(2, 191220, true, 200000, true, TradeModel.Storage),            // Элитная пила
             ["HandDrill4Item"] = new MyItem(2, 192637, true, 200000, true, TradeModel.Storage),               // Элитный бур
@@ -114,17 +114,17 @@ namespace IngameScript
         };
 
         static internal Dictionary<string, MyItem> Oxygen = new Dictionary<string, MyItem>()
-        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+        {
             ["OxygenBottle"] = new MyItem(2, 13858, true, 14000, true, TradeModel.Storage)                 // Кислородный баллон
         };
 
         static internal Dictionary<string, MyItem> Hydrogen = new Dictionary<string, MyItem>()
-        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+        {
             ["HydrogenBottle"] = new MyItem(2, 13858, true, 14000, true, TradeModel.Storage),               // Водородный баллон
         };
 
         static internal Dictionary<string, MyItem> Ammo = new Dictionary<string, MyItem>()
-        {// Граница закупки и продажи / Цена закупки / Вкл закупку / Цена продажи / Вкл продажу
+        {
             ["Missile200mm"] = new MyItem(100, 38620, true, 40000, true, TradeModel.Storage),                 // Ракеты
             ["NATO_25x184mm"] = new MyItem(50, 65844, true, 66000, true, TradeModel.Storage),                // Коробка патронов
             ["NATO_5p56x45mm"] = new MyItem(50, 3169, true, 3300, true, TradeModel.Storage),               // Магазин с патронами
@@ -137,16 +137,20 @@ namespace IngameScript
             "магазин.разместить",
             "магазин.очистить",
             "магазин.список",
-            "магазин.время"
+            "магазин.время",
+            "инвентарь.обновление",
+            "инвентарь.стоп"
         };
 
         // Режим работы с товаром
         public enum TradeModel : byte { Shop, Storage }
+        bool updateCont = false;
+        string oldCommand = "";
 
         public Program()
         {
-            AutoStore = new MyAutoStore(tradeComponents, tradeIngots, tradeOres, tradeTools, timeRefresh);
-            AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, storeType);
+            AutoStore = new MyAutoStore(ref tradeComponents, ref tradeIngots, ref tradeOres, ref tradeTools, timeRefresh);
+            AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, ref storeType);
             CheckingSystem();
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
             AvailableCommands();
@@ -156,16 +160,32 @@ namespace IngameScript
         {
             if (AutoStore.TimeCheckStore.IsOut()) // Ожидаем, пока не настанет время обновления магазина
             {
-                AutoStore.StoreUpdate(GridTerminalSystem, Me, groupContainersForTrade, tagContainerForTrade, tagExclude); // Главный метод обновления товаров в магазине
-                Me.GetSurface(0).WriteText(AutoStore.Warning);
                 if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
+                AutoStore.StoreUpdate(GridTerminalSystem, Me, ref groupContainersForTrade, ref tagContainerForTrade, ref tagExclude); // Главный метод обновления товаров в магазине
+            }
+            else if (updateCont)
+            {
+                if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
+                WriteLcdItems();
             }
             else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
+
             
-            Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
             if (arg != string.Empty) Arguments(arg);
+            Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
+            AvailableCommands();
         }
 
+        void WriteLcdItems()
+        {
+            if (AutoStore.UpdateCargoItems(GridTerminalSystem, Me, ref tagExclude))
+            {
+                //updateCont = false;
+                Me.GetSurface(0).WriteText(AutoStore.InfoComponents);
+                Me.GetSurface(0).WriteText(AutoStore.InfoIngOre, true);
+                Me.GetSurface(0).WriteText(AutoStore.InfoTools, true);
+            }
+        }
         void CheckingSystem()
         {
             if (AutoStore.StoreComp.Block != null)
@@ -190,7 +210,7 @@ namespace IngameScript
             if (arg.ToLower() == arguments[0])
             {
                 AutoStore.TimeCheckStore.Stop();
-                Echo(" => \nРазмещение товаров");
+                oldCommand = arguments[0];
                 AvailableCommands();
             }
             else if (arg.ToLower() == arguments[1])
@@ -199,7 +219,7 @@ namespace IngameScript
                 AutoStore.StoreIng.ClearAll();
                 AutoStore.StoreOre.ClearAll();
                 AutoStore.StoreTool.ClearAll();
-                Echo(" => \nОчистка завершено");
+                oldCommand = $"{arguments[1]}\n=> Очистка завершена";
                 AvailableCommands();
             }
             else if (arg.ToLower() == arguments[2])
@@ -208,19 +228,30 @@ namespace IngameScript
                 Me.CustomData += AutoStore.StoreIng.GetOrdersAndOffers();
                 Me.CustomData += AutoStore.StoreOre.GetOrdersAndOffers();
                 Me.CustomData += AutoStore.StoreTool.GetOrdersAndOffers();
-                Echo(" => \nТовары из магазина\nвыведны в данные ПБ");
+                oldCommand = $"{arguments[2]}\nТовары из магазина выведны в данные ПБ";
                 AvailableCommands();
             }
             else if (arg.ToLower() == arguments[3])
             {
-                Echo($"Обновление магазина через\n{AutoStore.TimeCheckStore.RestTime}");
+                oldCommand = $"{arguments[3]}\nОбновление магазина через\n{AutoStore.TimeCheckStore.RestTime}";
                 AvailableCommands();
             }
-            else AvailableCommands();
+            else if (arg.ToLower() == arguments[4])
+            {
+                oldCommand = arguments[4];
+                updateCont = true;
+                AvailableCommands();
+            }
+            else if (arg.ToLower() == arguments[5])
+            {
+                oldCommand = arguments[5];
+                updateCont = false;
+                AvailableCommands();
+            }
         }
         void AvailableCommands()
         {
-            string info = "\nВозможные аргументы:";
+            string info = $"Пред.аргумент:{oldCommand}\n\nВозможные аргументы:";
             foreach (var arg in arguments) { info += $"\n{arg}"; }
             Echo(info);
         }
