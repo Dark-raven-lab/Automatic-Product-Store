@@ -144,7 +144,6 @@ namespace IngameScript
 
         // Режим работы с товаром
         public enum TradeModel : byte { Shop, Storage }
-        bool updateCont = false;
         string oldCommand = "";
 
         public Program()
@@ -163,29 +162,13 @@ namespace IngameScript
                 if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
                 AutoStore.StoreUpdate(GridTerminalSystem, Me, ref groupContainersForTrade, ref tagContainerForTrade, ref tagExclude); // Главный метод обновления товаров в магазине
             }
-            else if (updateCont)
-            {
-                if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
-                WriteLcdItems();
-            }
             else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
-            
             if (arg != string.Empty) Arguments(arg);
             Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
             AvailableCommands();
         }
 
-        void WriteLcdItems()
-        {
-            if (AutoStore.UpdateCargoItems(GridTerminalSystem, Me, ref tagExclude))
-            {
-                //updateCont = false;
-                Me.GetSurface(0).WriteText(AutoStore.InfoComponents);
-                Me.GetSurface(0).WriteText(AutoStore.InfoIngOre, true);
-                Me.GetSurface(0).WriteText(AutoStore.InfoTools, true);
-            }
-        }
         void CheckingSystem()
         {
             if (AutoStore.StoreComp.Block != null)
@@ -234,18 +217,6 @@ namespace IngameScript
             else if (arg.ToLower() == arguments[3])
             {
                 oldCommand = $"{arguments[3]}\nОбновление магазина через\n{AutoStore.TimeCheckStore.RestTime}";
-                AvailableCommands();
-            }
-            else if (arg.ToLower() == arguments[4])
-            {
-                oldCommand = arguments[4];
-                updateCont = true;
-                AvailableCommands();
-            }
-            else if (arg.ToLower() == arguments[5])
-            {
-                oldCommand = arguments[5];
-                updateCont = false;
                 AvailableCommands();
             }
         }
