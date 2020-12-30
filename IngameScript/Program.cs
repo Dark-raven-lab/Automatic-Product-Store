@@ -132,14 +132,12 @@ namespace IngameScript
 
         // ============ КОНЕЦ НАСТРОЕК ============
 
-        MyAutoStore AutoStore;
+        MyMarket AutoStore;
         readonly string[] arguments = new string[] {
             "магазин.разместить",
             "магазин.очистить",
             "магазин.список",
-            "магазин.время",
-            "инвентарь.обновление",
-            "инвентарь.стоп"
+            "магазин.время"
         };
 
         // Режим работы с товаром
@@ -148,7 +146,7 @@ namespace IngameScript
 
         public Program()
         {
-            AutoStore = new MyAutoStore(ref tradeComponents, ref tradeIngots, ref tradeOres, ref tradeTools, timeRefresh);
+            AutoStore = new MyMarket(ref tradeComponents, ref tradeIngots, ref tradeOres, ref tradeTools, timeRefresh);
             AutoStore.GetStoreBlock(GridTerminalSystem, Me.CubeGrid, ref storeType);
             CheckingSystem();
             Runtime.UpdateFrequency = UpdateFrequency.Update10;

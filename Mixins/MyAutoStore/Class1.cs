@@ -19,7 +19,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class MyAutoStore
+        public class MyMarket
         {
             int _invenoryCounter = 0, _storeCount = 0; // Счётчик для инвентаря
             internal MyProductBlock StoreComp { get; private set; } // Подсистема магазина компонентов
@@ -43,7 +43,7 @@ namespace IngameScript
             /// <param name="CubeGrid"></param>
             /// <param name="storeTags">Имя блока магазина</param>
             /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyAutoStore(ref bool tradeComponents, ref bool tradeIngots, ref bool tradeOres, ref bool tradeTools, int secondsForUpdate = 3600)
+            internal MyMarket(ref bool tradeComponents, ref bool tradeIngots, ref bool tradeOres, ref bool tradeTools, int secondsForUpdate = 3600)
             {
                 StoreComp = new MyProductBlock(tradeComponents);
                 StoreIng = new MyProductBlock(tradeIngots);
