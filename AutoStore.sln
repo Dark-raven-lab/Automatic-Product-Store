@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Automatic product store", "IngameScript\Automatic product store.csproj", "{3C77A404-DA81-43FE-B88B-09D4500D1D8C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyTimer", "Mixins\Timer\MyTimer.shproj", "{61EBA249-19F3-48B6-A25B-A4CEE90168BA}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Timer", "Mixins\Timer\Timer.shproj", "{61EBA249-19F3-48B6-A25B-A4CEE90168BA}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyProductBlock", "Mixins\MyProductStore\MyProductBlock.shproj", "{D6E3C032-3C6F-457A-8154-285C507117BC}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyMarket", "Mixins\MyAutoStore\MyMarket.shproj", "{80F79B32-8C8A-43CD-9632-31581D706D3B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Market", "Mixins\MyAutoStore\Market.shproj", "{80F79B32-8C8A-43CD-9632-31581D706D3B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MyItemStore", "Mixins\MyItemStore\MyItemStore.shproj", "{1D738428-9847-41DB-B49C-D405CB6C8CD0}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ItemStore", "Mixins\MyItemStore\ItemStore.shproj", "{1D738428-9847-41DB-B49C-D405CB6C8CD0}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

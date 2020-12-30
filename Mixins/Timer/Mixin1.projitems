@@ -9,6 +9,6 @@
     <Import_RootNamespace>IngameScript</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)MyTimer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Timer.cs" />
   </ItemGroup>
 </Project>
