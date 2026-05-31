@@ -263,30 +263,40 @@ namespace IngameScript
         void CheckingSystem()
         {
             Me.CustomData = "";
+            
             if (AutoStore.StoreComp.Block != null)
-                Me.CustomData = $"\nМагазин {AutoStore.StoreComp.Block.CustomName} подключен. Торговля: {tradeComponents}";
+                Me.CustomData += $"{AutoStore.StoreComp.Block.CustomName} подключен. Торговля: {tradeComponents}";
             else
-                Me.CustomData = $"\nМагазин {storeType[0]} не подключен";
+                Me.CustomData += $"Магазин для {storeType[0]} не подключен.";
+            
             if (AutoStore.StoreIng.Block != null)
-                Me.CustomData += $"\nМагазин {AutoStore.StoreIng.Block.CustomName} подключен. Торговля: {tradeIngots}";
+                Me.CustomData += $"\n{AutoStore.StoreIng.Block.CustomName} подключен. Торговля: {tradeIngots}";
             else
-                Me.CustomData += $"\nМагазин {storeType[1]} не подключен";
+                Me.CustomData += $"\nМагазин для {storeType[1]} не подключен.";
+            
             if (AutoStore.StoreOre.Block != null)
-                Me.CustomData += $"\nМагазин {AutoStore.StoreOre.Block.CustomName} подключен. Торговля: {tradeOres}";
+                Me.CustomData += $"\n{AutoStore.StoreOre.Block.CustomName} подключен. Торговля: {tradeOres}";
             else
-                Me.CustomData += $"\nМагазин {storeType[2]} не подключен";
+                Me.CustomData += $"\nМагазин для {storeType[2]} не подключен.";
+            
             if (AutoStore.StoreTool.Block != null)
-                Me.CustomData += $"\nМагазин {AutoStore.StoreTool.Block.CustomName} подключен. Торговля: {tradeTools}";
+                Me.CustomData += $"\n{AutoStore.StoreTool.Block.CustomName} подключен. Торговля: {tradeTools}";
             else
-                Me.CustomData += $"\nМагазин {storeType[3]} не подключен";
+                Me.CustomData += $"\nМагазин для {storeType[3]} не подключен.";
+            
             if (AutoStore.StoreConsumables.Block != null)
-                Me.CustomData += $"\nМагазин {AutoStore.StoreConsumables.Block.CustomName} подключен. Торговля: {tradeConsumables}";
+                Me.CustomData += $"\n{AutoStore.StoreConsumables.Block.CustomName} подключен. Торговля: {tradeConsumables}";
             else
-                Me.CustomData += $"\nМагазин {storeType[4]} не подключен";
+                Me.CustomData += $"\nМагазин для {storeType[4]} не подключен.";
+            
             if (AutoStore.StoreSeeds.Block != null)
-                Me.CustomData += $"\nМагазин {AutoStore.StoreSeeds.Block.CustomName} подключен. Торговля: {tradeSeeds}";
+                Me.CustomData += $"\n{AutoStore.StoreSeeds.Block.CustomName} подключен. Торговля: {tradeSeeds}";
             else
-                Me.CustomData += $"\nМагазин {storeType[5]} не подключен";
+                Me.CustomData += $"\nМагазин для {storeType[5]} не подключен.";
+
+            Me.CustomData += $"\n\nКонтейнеров используется: {AutoStore.Containers.Count}";
+            Me.CustomData += $"\n* Добавьте нужным контейнерам тег '{tagContainerForTrade}' в имя блока.";
+            Me.CustomData += $"\n* Или создайте группу '{groupContainersForTrade}' с нужными контейнерами.";
         }
         void Arguments(string arg)
         {

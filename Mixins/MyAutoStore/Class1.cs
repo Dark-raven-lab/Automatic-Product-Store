@@ -32,6 +32,7 @@ namespace IngameScript
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
             string _infoComponents = "", _infoIngOre = "", _infoTools = "", _infoConsumables = "", _infoSeeds = "";
+            internal List<IMyCargoContainer> Containers { get { return _containers; } }
             internal string InfoComponents { get { return _infoComponents; } }
             internal string InfoIngOre { get { return _infoIngOre; } }
             internal string InfoTools { get { return _infoTools; } }
@@ -96,10 +97,6 @@ namespace IngameScript
                 else if (tagContainer != string.Empty)
                     terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && x.CustomName.ToLower().Contains(tagContainer.ToLower()));
                 if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && !x.CustomName.ToLower().Contains(tagExclude.ToLower()));
-
-                Me.CustomData += $"\n[DIAG] Найдено контейнеров: {_containers.Count}";
-                if (_containers.Count == 0)
-                    Me.CustomData += $"\n[DIAG] ВНИМАНИЕ! Контейнеры не найдены! Проверьте тег '{tagContainer}' или группу '{group}'.";
             }
 
             void PlaceOffers()
