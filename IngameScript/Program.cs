@@ -294,8 +294,7 @@ namespace IngameScript
             else
                 Me.CustomData += $"\nМагазин для {storeType[5]} не подключен.";
 
-            Me.CustomData += $"\n\nКонтейнеров используется: {AutoStore.Containers.Count}";
-            Me.CustomData += $"\n* Добавьте нужным контейнерам тег '{kTagContainerForTrade}' в имя блока.";
+            Me.CustomData += $"\n\n* Добавьте нужным контейнерам тег '{kTagContainerForTrade}' в имя блока.";
             Me.CustomData += $"\n* Или создайте группу '{kGroupContainersForTrade}' с нужными контейнерами.";
         }
         void Arguments(string arg)
