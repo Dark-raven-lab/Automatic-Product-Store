@@ -37,11 +37,11 @@ namespace IngameScript
                 foreach (var t in temp) { Block = t; break; }
             }
 
-            internal void PlaceOfferingsAndSales(ref Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name, bool append = false)
+            internal void PlaceOfferingsAndSales(ref Dictionary<string, MyItem> ItemsForSaleBuy, string MyObjectBuilder_name, int globalMarkupPercent, bool append = false)
             {
                 if (!Trading || Block == null || !Block.IsWorking) return;
                 _storeItems.Clear();
-                if (!append) { TradeInfo.Clear(); TradeInfo.AppendLine($"Выкладка товаров осуществленна {DateTime.Now:g}"); }
+                if (!append) { TradeInfo.Clear(); TradeInfo.AppendLine($"Выкладка товаров осуществлена {DateTime.Now:g}"); }
                 Block.GetPlayerStoreItems(_storeItems);
                 foreach (var Item in ItemsForSaleBuy)
                 {
@@ -50,19 +50,28 @@ namespace IngameScript
                         if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount)
                             CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount, true);
                         else if (Item.Value.AlowSale && Item.Value.Amount > Item.Value.MaxAmount)
-                            CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount - Item.Value.MaxAmount, true);
+                        {
+                            int salePrice = Item.Value.GetEffectiveSalePrice(globalMarkupPercent);
+                            CreateOffer(ref MyObjectBuilder_name, Item.Key, salePrice, Item.Value.Amount - Item.Value.MaxAmount, true);
+                        }
                     }
                     else if (Item.Value.Mode == TradeModel.Shop)
                     {
                         if (Item.Value.AlowBuy && Item.Value.Amount < Item.Value.MaxAmount)
                             CreateOrder(ref MyObjectBuilder_name, Item.Key, Item.Value.BuyPrice, Item.Value.MaxAmount - Item.Value.Amount);
                         if (Item.Value.AlowSale && Item.Value.Amount > 0)
-                            CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount);
+                        {
+                            int salePrice = Item.Value.GetEffectiveSalePrice(globalMarkupPercent);
+                            CreateOffer(ref MyObjectBuilder_name, Item.Key, salePrice, Item.Value.Amount);
+                        }
                     }
                     else if (Item.Value.Mode == TradeModel.SellOnly)
                     {
                         if (Item.Value.AlowSale && Item.Value.Amount > 0)
-                            CreateOffer(ref MyObjectBuilder_name, Item.Key, Item.Value.SalePrice, Item.Value.Amount, true);
+                        {
+                            int salePrice = Item.Value.GetEffectiveSalePrice(globalMarkupPercent);
+                            CreateOffer(ref MyObjectBuilder_name, Item.Key, salePrice, Item.Value.Amount, true);
+                        }
                     }
                 }
                 if (append) Block.CustomData += TradeInfo.ToString();
