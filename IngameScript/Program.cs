@@ -90,31 +90,31 @@ namespace IngameScript
         // ========== СЛИТКИ ==========
         static internal Dictionary<string, MyItem> Ingots = new Dictionary<string, MyItem>()
         {
-            ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true, TradeModel.Storage, true, 0),
-            ["Gold"] = new MyItem(1000, 23355, true, 24000, true, TradeModel.Storage, true, 0),
-            ["Iron"] = new MyItem(1000, 150, true, 170, true, TradeModel.Storage, true, 0),
-            ["Magnesium"] = new MyItem(1000, 34054, true, 34500, true, TradeModel.Storage, true, 0),
-            ["Nickel"] = new MyItem(1000, 306, true, 310, true, TradeModel.Storage, true, 0),
-            ["Platinum"] = new MyItem(10, 122815, true, 123000, true, TradeModel.Storage, true, 0),
-            ["Silicon"] = new MyItem(1000, 173, true, 180, true, TradeModel.Storage, true, 0),
-            ["Silver"] = new MyItem(1000, 2585, true, 2600, true, TradeModel.Storage, true, 0),
-            ["Uranium"] = new MyItem(50, 80664, true, 80700, true, TradeModel.Storage, true, 0),
+            ["Cobalt"] = new MyItem(1000, 1535, true, 1600, true, TradeModel.SellOnly, true, 0),
+            ["Gold"] = new MyItem(1000, 23355, true, 24000, true, TradeModel.SellOnly, true, 0),
+            ["Iron"] = new MyItem(1000, 150, true, 170, true, TradeModel.SellOnly, true, 0),
+            ["Magnesium"] = new MyItem(1000, 34054, true, 34500, true, TradeModel.SellOnly, true, 0),
+            ["Nickel"] = new MyItem(1000, 306, true, 310, true, TradeModel.SellOnly, true, 0),
+            ["Platinum"] = new MyItem(10, 122815, true, 123000, true, TradeModel.SellOnly, true, 0),
+            ["Silicon"] = new MyItem(1000, 173, true, 180, true, TradeModel.SellOnly, true, 0),
+            ["Silver"] = new MyItem(1000, 2585, true, 2600, true, TradeModel.SellOnly, true, 0),
+            ["Uranium"] = new MyItem(50, 80664, true, 80700, true, TradeModel.SellOnly, true, 0),
         };
 
-        // ========== РУДЫ ==========
+        // ========== РУДЫ ==========ы
         static internal Dictionary<string, MyItem> Ores = new Dictionary<string, MyItem>()
         {
-            ["Cobalt"] = new MyItem(1000, 300, true, 310, true, TradeModel.Storage, true, 0),
-            ["Gold"] = new MyItem(1000, 210, true, 230, true, TradeModel.Storage, true, 0),
-            ["Stone"] = new MyItem(1000, 10, true, 11, true, TradeModel.Storage, true, 0),
-            ["Iron"] = new MyItem(1000, 105, true, 110, true, TradeModel.Storage, true, 0),
-            ["Magnesium"] = new MyItem(1000, 210, true, 212, true, TradeModel.Storage, true, 0),
-            ["Nickel"] = new MyItem(1000, 100, true, 105, true, TradeModel.Storage, true, 0),
-            ["Platinum"] = new MyItem(1000, 420, true, 435, true, TradeModel.Storage, true, 0),
-            ["Silicon"] = new MyItem(1000, 100, true, 110, true, TradeModel.Storage, true, 0),
-            ["Silver"] = new MyItem(1000, 210, true, 212, true, TradeModel.Storage, true, 0),
-            ["Uranium"] = new MyItem(1000, 350, true, 505, true, TradeModel.Storage, true, 0),
-            ["Ice"] = new MyItem(1000, 50, true, 51, true, TradeModel.Storage, true, 0),
+            ["Cobalt"] = new MyItem(1000, 300, true, 310, true, TradeModel.SellOnly, true, 0),
+            ["Gold"] = new MyItem(1000, 210, true, 230, true, TradeModel.SellOnly, true, 0),
+            ["Stone"] = new MyItem(1000, 10, true, 11, true, TradeModel.SellOnly, true, 0),
+            ["Iron"] = new MyItem(1000, 105, true, 110, true, TradeModel.SellOnly, true, 0),
+            ["Magnesium"] = new MyItem(1000, 210, true, 212, true, TradeModel.SellOnly, true, 0),
+            ["Nickel"] = new MyItem(1000, 100, true, 105, true, TradeModel.SellOnly, true, 0),
+            ["Platinum"] = new MyItem(1000, 420, true, 435, true, TradeModel.SellOnly, true, 0),
+            ["Silicon"] = new MyItem(1000, 100, true, 110, true, TradeModel.SellOnly, true, 0),
+            ["Silver"] = new MyItem(1000, 210, true, 212, true, TradeModel.SellOnly, true, 0),
+            ["Uranium"] = new MyItem(1000, 350, true, 505, true, TradeModel.SellOnly, true, 0),
+            ["Ice"] = new MyItem(1000, 50, true, 51, true, TradeModel.SellOnly, true, 0),
         };
 
         // ========== ИНСТРУМЕНТЫ, ОРУЖИЕ, БАЛЛОНЫ, БОЕПРИПАСЫ ==========
@@ -146,12 +146,12 @@ namespace IngameScript
 
         static internal Dictionary<string, MyItem> Oxygen = new Dictionary<string, MyItem>()
         {
-            ["OxygenBottle"] = new MyItem(2, 68909, true, 70000, true, TradeModel.Storage, true, 0)
+            ["OxygenBottle"] = new MyItem(2, 68909, true, 70000, true, TradeModel.SellOnly, true, 0)
         };
 
         static internal Dictionary<string, MyItem> Hydrogen = new Dictionary<string, MyItem>()
         {
-            ["HydrogenBottle"] = new MyItem(2, 68909, true, 70000, true, TradeModel.Storage, true, 0)
+            ["HydrogenBottle"] = new MyItem(2, 68909, true, 70000, true, TradeModel.SellOnly, true, 0)
         };
 
         static internal Dictionary<string, MyItem> Ammo = new Dictionary<string, MyItem>()
