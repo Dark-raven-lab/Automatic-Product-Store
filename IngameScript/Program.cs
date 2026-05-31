@@ -253,7 +253,11 @@ namespace IngameScript
             else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
             if (arg != string.Empty) Arguments(arg);
+            
             Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
+            if (AutoStore.TimeCheckStore.Launched)
+                Echo($"Обновление предложений \n* через {AutoStore.TimeCheckStore.RestTime}");
+                
             AvailableCommands();
         }
 
@@ -323,7 +327,7 @@ namespace IngameScript
         }
         void AvailableCommands()
         {
-            string info = $"Пред.аргумент:{oldCommand}\n\nВозможные аргументы:";
+            string info = $"\nПред.аргумент: {oldCommand}\n\nВозможные аргументы:";
             foreach (var arg in arguments) { info += $"\n{arg}"; }
             Echo(info);
         }
