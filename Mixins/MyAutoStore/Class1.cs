@@ -73,17 +73,6 @@ namespace IngameScript
                 PlaceOffers();
             }
 
-            internal void StoreUpdate(List<IMyCargoContainer> containers)
-            {
-                _containers = containers;
-                PlaceOffers();
-            }
-
-            internal bool UpdateCargoItems(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, ref string tagExclude)
-            {
-                if (_containers.Count == 0) GetCargoBlocks(terminalSystem, Me, tagExclude);
-                return SortingContentsInventories();
-            }
 
             void GetCargoBlocks(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group = "", string tagContainer = "", string tagExclude = "исключить")
             {
