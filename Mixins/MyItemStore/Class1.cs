@@ -28,8 +28,11 @@ namespace IngameScript
             internal bool AlowSale { get; set; }
             internal bool AlowBuy { get; set; }
             public TradeModel Mode { get; set; }
+            public bool UseMarkup { get; set; } // флаг, использовать ли наценку (если false, берётся фиксированная SalePrice).
+            public int MarkupPercent { get; set; } // индивидуальный процент для товара (если 0, а UseMarkup = true, то применяется глобальный).
 
-            public MyItem(int MaxAmount = 0, int BuyPrice = 1, bool AlowBuy = false, int SalePrice = 2, bool AlowSale = false, TradeModel storeMode = TradeModel.Storage)
+            public MyItem(int MaxAmount = 0, int BuyPrice = 1, bool AlowBuy = false, int SalePrice = 2, bool AlowSale = false,
+                  TradeModel storeMode = TradeModel.Storage, bool useMarkup = false, int markupPercent = 0)
             {
                 this.MaxAmount = MaxAmount;
                 this.BuyPrice = BuyPrice;
@@ -37,6 +40,18 @@ namespace IngameScript
                 this.AlowBuy = AlowBuy;
                 this.AlowSale = AlowSale;
                 Mode = storeMode;
+                UseMarkup = useMarkup;
+                MarkupPercent = markupPercent;
+            }
+
+            public int GetEffectiveSalePrice(int globalMarkupPercent)
+            {
+                if (UseMarkup)
+                {
+                    int percent = MarkupPercent > 0 ? MarkupPercent : globalMarkupPercent;
+                    return BuyPrice * (100 + percent) / 100;
+                }
+                return SalePrice;
             }
         }
     }
