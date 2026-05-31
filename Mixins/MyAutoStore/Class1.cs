@@ -51,10 +51,10 @@ namespace IngameScript
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
 
-            internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, ref string[] storeTags)
+            internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid cubeGrid, ref string[] storeTags)
             {
                 List<IMyStoreBlock> AllStoreBlock = new List<IMyStoreBlock>();
-                TerminalSystem.GetBlocksOfType(AllStoreBlock, x => x.CubeGrid == CubeGrid);
+                TerminalSystem.GetBlocksOfType(AllStoreBlock, x => x.CubeGrid == cubeGrid);
                 foreach (var thisBlock in AllStoreBlock)
                 {
                     string nameLower = thisBlock.CustomName.ToLower();
@@ -67,25 +67,25 @@ namespace IngameScript
                 }
             }
 
-            internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, ref string group, ref string tagContainer, ref string tagExclude)
+            internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyCubeGrid cubeGrid)
             {
-                if (_containers.Count == 0 || _storeCount == 0) GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
+                if (_containers.Count == 0 || _storeCount == 0) GetCargoBlocks(terminalSystem, cubeGrid);
                 PlaceOffers();
             }
 
 
-            void GetCargoBlocks(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group = "", string tagContainer = "", string tagExclude = "исключить")
+            void GetCargoBlocks(IMyGridTerminalSystem terminalSystem, IMyCubeGrid cubeGrid)
             {
                 Warning = "";
                 _containers.Clear();
-                if (group != string.Empty)
+                if (kGroupContainersForTrade != string.Empty)
                 {
-                    var groupCargo = terminalSystem.GetBlockGroupWithName(group);
+                    var groupCargo = terminalSystem.GetBlockGroupWithName(kGroupContainersForTrade);
                     if (groupCargo != null) groupCargo.GetBlocksOfType<IMyCargoContainer>(_containers);
                 }
-                else if (tagContainer != string.Empty)
-                    terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && x.CustomName.ToLower().Contains(tagContainer.ToLower()));
-                if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && !x.CustomName.ToLower().Contains(tagExclude.ToLower()));
+                else if (kTagContainerForTrade != string.Empty)
+                    terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == cubeGrid && x.CustomName.ToLower().Contains(kTagContainerForTrade.ToLower()));
+                if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == cubeGrid && !x.CustomName.ToLower().Contains(kTagExclude.ToLower()));
             }
 
             void PlaceOffers()

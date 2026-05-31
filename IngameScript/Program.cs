@@ -22,9 +22,9 @@ namespace IngameScript
 
         // ============ ОПЦИОНАЛЬНЫЕ НАСТРОЙКИ МАГАЗИНА ============
         int timeRefresh = 3600; // Интервал для обновления товаров в магазине в секундах (3600 сек = 1 час)
-        string tagExclude = "Исключить";
-        string groupContainersForTrade = "";
-        string tagContainerForTrade = "";
+        const string kTagExclude = "Исключить";
+        const string kGroupContainersForTrade = "";
+        const string kTagContainerForTrade = "";
 
         bool tradeComponents = true;
         bool tradeIngots = true;
@@ -247,7 +247,7 @@ namespace IngameScript
             if (AutoStore.TimeCheckStore.IsOut())
             {
                 if (Runtime.UpdateFrequency != UpdateFrequency.Update10) Runtime.UpdateFrequency = UpdateFrequency.Update10;
-                AutoStore.StoreUpdate(GridTerminalSystem, Me, ref groupContainersForTrade, ref tagContainerForTrade, ref tagExclude);
+                AutoStore.StoreUpdate(GridTerminalSystem, Me.CubeGrid);
             }
             else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
@@ -295,8 +295,8 @@ namespace IngameScript
                 Me.CustomData += $"\nМагазин для {storeType[5]} не подключен.";
 
             Me.CustomData += $"\n\nКонтейнеров используется: {AutoStore.Containers.Count}";
-            Me.CustomData += $"\n* Добавьте нужным контейнерам тег '{tagContainerForTrade}' в имя блока.";
-            Me.CustomData += $"\n* Или создайте группу '{groupContainersForTrade}' с нужными контейнерами.";
+            Me.CustomData += $"\n* Добавьте нужным контейнерам тег '{kTagContainerForTrade}' в имя блока.";
+            Me.CustomData += $"\n* Или создайте группу '{kGroupContainersForTrade}' с нужными контейнерами.";
         }
         void Arguments(string arg)
         {
