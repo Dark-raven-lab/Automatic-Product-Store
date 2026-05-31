@@ -19,12 +19,9 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class Timer // Просто таймер отсчёта времени
+        public class Timer
         {
             DateTime _stopTime;
-            /// <summary>
-            /// Остаток времени таймера
-            /// </summary>
             internal string RestTime
             {
                 get
@@ -37,45 +34,17 @@ namespace IngameScript
                     return "не запущен";
                 }
             }
-            /// <summary>
-            /// Состояние таймера [Не обновляет сам таймер]
-            /// </summary>
             internal bool Launched { get; private set; }
-            /// <summary>
-            /// Длительность отсчёта (в секундах)
-            /// </summary>
             internal int Countdown { get; set; }
-            /// <summary>
-            /// Таймер обратного отсчёта
-            /// </summary>
             internal Timer(int Seconds, bool start) { Countdown = Seconds; if (start) Start(); }
-            /// <summary>
-            /// Запуск таймера
-            /// </summary>
             internal void Start() { Launched = true; _stopTime = DateTime.Now.AddSeconds(Countdown); }
-            /// <summary>
-            /// Остановка таймера и сброс отсчёта
-            /// </summary>
             internal void Stop() { Launched = false; }
-            /// <summary>
-            /// Проверяет таймер и если он вышел - вернёт ЕДИНОЖДЫ true и остановит отсчёт
-            /// </summary>
             internal bool IsFinsh()
             {
-                if (Launched)
-                {
-                    if (DateTime.Now >= _stopTime) { Stop(); return true; }
-                }
+                if (Launched && DateTime.Now >= _stopTime) { Stop(); return true; }
                 return false;
             }
-            /// <summary>
-            /// Проверяет остановлен ли таймер и возвращает true если остановлен
-            /// </summary>
-            /// <returns></returns>
-            internal bool IsOut()
-            {
-                IsFinsh(); return !Launched;
-            }
+            internal bool IsOut() { IsFinsh(); return !Launched; }
         }
     }
 }

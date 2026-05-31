@@ -19,97 +19,71 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class MyMarket
+        public class MyAutoStore
         {
-            int _invenoryCounter = 0, _storeCount = 0; // Счётчик для инвентаря
-            internal MyProductBlock StoreComp { get; private set; } // Подсистема магазина компонентов
-            internal MyProductBlock StoreIng { get; private set; } // Подсистема магазина слитков
-            internal MyProductBlock StoreOre { get; private set; } // Подсистема магазина руды
-            internal MyProductBlock StoreTool { get; private set; } // Подсистема магазина инструментов
-            internal Timer TimeCheckStore; // Таймер для выкладки товара в магазин
+            int _invenoryCounter = 0, _storeCount = 0;
+            internal MyProductBlock StoreComp { get; private set; }
+            internal MyProductBlock StoreIng { get; private set; }
+            internal MyProductBlock StoreOre { get; private set; }
+            internal MyProductBlock StoreTool { get; private set; }
+            internal MyProductBlock StoreConsumables { get; private set; }
+            internal MyProductBlock StoreSeeds { get; private set; }
+            internal Timer TimeCheckStore;
             List<IMyCargoContainer> _containers = new List<IMyCargoContainer>();
 
-            string _infoComponents = "", _infoIngOre = "", _infoTools = "";
+            string _infoComponents = "", _infoIngOre = "", _infoTools = "", _infoConsumables = "", _infoSeeds = "";
             internal string InfoComponents { get { return _infoComponents; } }
             internal string InfoIngOre { get { return _infoIngOre; } }
             internal string InfoTools { get { return _infoTools; } }
-
+            internal string InfoConsumables { get { return _infoConsumables; } }
+            internal string InfoSeeds { get { return _infoSeeds; } }
             internal string Warning { get; private set; } = "";
 
-            /// <summary>
-            /// Конструктор с поиском блока магазина
-            /// </summary>
-            /// <param name="TerminalSystem"></param>
-            /// <param name="CubeGrid"></param>
-            /// <param name="storeTags">Имя блока магазина</param>
-            /// <param name="secondsForUpdate">Интервал обновления предложений в магазине</param>
-            internal MyMarket(ref bool tradeComponents, ref bool tradeIngots, ref bool tradeOres, ref bool tradeTools, int secondsForUpdate = 3600)
+            internal MyAutoStore(ref bool tradeComponents, ref bool tradeIngots, ref bool tradeOres, ref bool tradeTools, ref bool tradeConsumables, ref bool tradeSeeds, int secondsForUpdate = 3600)
             {
                 StoreComp = new MyProductBlock(tradeComponents);
                 StoreIng = new MyProductBlock(tradeIngots);
                 StoreOre = new MyProductBlock(tradeOres);
                 StoreTool = new MyProductBlock(tradeTools);
+                StoreConsumables = new MyProductBlock(tradeConsumables);
+                StoreSeeds = new MyProductBlock(tradeSeeds);
                 TimeCheckStore = new Timer(secondsForUpdate, false);
             }
 
-            /// <summary>
-            /// Поиск и сохранение блоков магазина
-            /// </summary>
-            /// <param name="TerminalSystem"></param>
-            /// <param name="CubeGrid"></param>
-            /// <param name="storeTags">теги для магазинов</param>
             internal void GetStoreBlock(IMyGridTerminalSystem TerminalSystem, IMyCubeGrid CubeGrid, ref string[] storeTags)
             {
                 List<IMyStoreBlock> AllStoreBlock = new List<IMyStoreBlock>();
                 TerminalSystem.GetBlocksOfType(AllStoreBlock, x => x.CubeGrid == CubeGrid);
                 foreach (var thisBlock in AllStoreBlock)
                 {
-                    if (thisBlock.CustomName.ToLower().Contains(storeTags[0].ToLower())) StoreComp.Block = thisBlock;
-                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[1].ToLower())) StoreIng.Block = thisBlock;
-                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[2].ToLower())) StoreOre.Block = thisBlock;
-                    else if (thisBlock.CustomName.ToLower().Contains(storeTags[3].ToLower())) StoreTool.Block = thisBlock;
+                    string nameLower = thisBlock.CustomName.ToLower();
+                    if (nameLower.Contains(storeTags[0].ToLower())) StoreComp.Block = thisBlock;
+                    if (nameLower.Contains(storeTags[1].ToLower())) StoreIng.Block = thisBlock;
+                    if (nameLower.Contains(storeTags[2].ToLower())) StoreOre.Block = thisBlock;
+                    if (nameLower.Contains(storeTags[3].ToLower())) StoreTool.Block = thisBlock;
+                    if (storeTags.Length > 4 && nameLower.Contains(storeTags[4].ToLower())) StoreConsumables.Block = thisBlock;
+                    if (storeTags.Length > 5 && nameLower.Contains(storeTags[5].ToLower())) StoreSeeds.Block = thisBlock;
                 }
             }
 
-            /// <summary>
-            /// Обновление торговых предложений
-            /// </summary>
-            /// <param name="terminalSystem">Интерфейс для поиска блоков</param>
-            /// <param name="Me">Программный блок</param>
             internal void StoreUpdate(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, ref string group, ref string tagContainer, ref string tagExclude)
             {
                 if (_containers.Count == 0 || _storeCount == 0) GetCargoBlocks(terminalSystem, Me, group, tagContainer, tagExclude);
                 PlaceOffers();
             }
 
-            /// <summary>
-            /// Обновление торговых предложений
-            /// </summary>
-            /// <param name="containers">Список контейнеров</param>
             internal void StoreUpdate(List<IMyCargoContainer> containers)
             {
                 _containers = containers;
                 PlaceOffers();
             }
 
-            /// <summary>
-            /// Обновление список объектов в инветаре без продажи. Возвращает true когда с контейнеров всё отсортировано.
-            /// </summary>
-            /// <returns></returns>
             internal bool UpdateCargoItems(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, ref string tagExclude)
             {
                 if (_containers.Count == 0) GetCargoBlocks(terminalSystem, Me, tagExclude);
                 return SortingContentsInventories();
             }
 
-            /// <summary>
-            /// Получение блоков контейнера для учёта объектов
-            /// </summary>
-            /// <param name="terminalSystem">GridTerminalSystem</param>
-            /// <param name="Me">Me</param>
-            /// <param name="group">(опционально)группа блоков контейнеров</param>
-            /// <param name="tagContainer">(опционально) тег контейнеров</param>
-            /// <param name="tagExclude">(опционально) исключение контейнеров при общем поиске</param>
             void GetCargoBlocks(IMyGridTerminalSystem terminalSystem, IMyProgrammableBlock Me, string group = "", string tagContainer = "", string tagExclude = "исключить")
             {
                 Warning = "";
@@ -122,32 +96,39 @@ namespace IngameScript
                 else if (tagContainer != string.Empty)
                     terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && x.CustomName.ToLower().Contains(tagContainer.ToLower()));
                 if (_containers.Count == 0) terminalSystem.GetBlocksOfType(_containers, x => x.CubeGrid == Me.CubeGrid && !x.CustomName.ToLower().Contains(tagExclude.ToLower()));
+
+                Me.CustomData += $"\n[DIAG] Найдено контейнеров: {_containers.Count}";
+                if (_containers.Count == 0)
+                    Me.CustomData += $"\n[DIAG] ВНИМАНИЕ! Контейнеры не найдены! Проверьте тег '{tagContainer}' или группу '{group}'.";
             }
 
-            /// <summary>
-            /// Размещение товаров в магазине(-ах)
-            /// </summary>
             void PlaceOffers()
             {
                 if (_containers.Count == 0) { Warning = "Размещение отменено. Нет конейнеров"; return; }
-                if (SortingContentsInventories()) // Ждём окончания сортировки объектов
+                if (SortingContentsInventories())
                 {
                     switch (_storeCount)
                     {
                         case 0:
-                            StoreComp.PlaceOfferingsAndSales(ref Components, "MyObjectBuilder_Component"); // Выкладываем товары в магазин компонентов
+                            StoreComp.PlaceOfferingsAndSales(ref Components, "MyObjectBuilder_Component");
                             break;
                         case 1:
-                            StoreIng.PlaceOfferingsAndSales(ref Ingots, "MyObjectBuilder_Ingot"); // Выкладываем товары в магазин слитков
+                            StoreIng.PlaceOfferingsAndSales(ref Ingots, "MyObjectBuilder_Ingot");
                             break;
                         case 2:
-                            StoreOre.PlaceOfferingsAndSales(ref Ores, "MyObjectBuilder_Ore"); // Выкладываем товары в магазин руд
+                            StoreOre.PlaceOfferingsAndSales(ref Ores, "MyObjectBuilder_Ore");
                             break;
                         case 3:
                             StoreTool.PlaceOfferingsAndSales(ref Tools, "MyObjectBuilder_PhysicalGunObject");
                             StoreTool.PlaceOfferingsAndSales(ref Oxygen, "MyObjectBuilder_OxygenContainerObject", true);
                             StoreTool.PlaceOfferingsAndSales(ref Hydrogen, "MyObjectBuilder_GasContainerObject", true);
                             StoreTool.PlaceOfferingsAndSales(ref Ammo, "MyObjectBuilder_AmmoMagazine", true);
+                            break;
+                        case 4:
+                            StoreConsumables.PlaceOfferingsAndSales(ref Consumables, "MyObjectBuilder_ConsumableItem");
+                            break;
+                        case 5:
+                            StoreSeeds.PlaceOfferingsAndSales(ref Seeds, "MyObjectBuilder_SeedItem");
                             break;
                         default:
                             _storeCount = 0;
@@ -159,20 +140,16 @@ namespace IngameScript
                 }
             }
 
-            /// <summary>
-            /// Выполняет поиск и сортировку в инвентаре
-            /// </summary>
-            /// <returns>Возвращает true при окончании сортировки</returns>
             bool SortingContentsInventories()
             {
-                if (_storeCount > 0) return true; // если сортировку уже делали и начали выкладывать товары
-                if (_invenoryCounter == 0) SetAmountZero(); // Очищаем предыдущее кол-во
+                if (_storeCount > 0) return true;
+                if (_invenoryCounter == 0) SetAmountZero();
                 if (_invenoryCounter < _containers.Count)
                 {
                     List<MyInventoryItem> items = new List<MyInventoryItem>();
                     _containers[_invenoryCounter].GetInventory().GetItems(items);
-                    SortingItems(ref items); // Сортировка найденных объектов
-                    _invenoryCounter++; // Переходим к следующему инвентарю
+                    SortingItems(ref items);
+                    _invenoryCounter++;
                     return false;
                 }
                 else
@@ -183,6 +160,8 @@ namespace IngameScript
                     AppendListInfo(ref Oxygen, "БАЛЛОНЫ", ref _infoTools);
                     AppendListInfo(ref Hydrogen, "", ref _infoTools);
                     AppendListInfo(ref Ammo, "БОЕПРИПАСЫ", ref _infoTools);
+                    CreateListInfo(ref Consumables, "РАСХОДНИКИ", ref _infoConsumables);
+                    CreateListInfo(ref Seeds, "СЕМЕНА", ref _infoSeeds);
                     _invenoryCounter = 0;
                     return true;
                 }
@@ -197,13 +176,15 @@ namespace IngameScript
                 foreach (var item in Oxygen) { item.Value.Amount = 0; }
                 foreach (var item in Hydrogen) { item.Value.Amount = 0; }
                 foreach (var item in Ammo) { item.Value.Amount = 0; }
+                foreach (var item in Consumables) { item.Value.Amount = 0; }
+                foreach (var item in Seeds) { item.Value.Amount = 0; }
             }
 
             void SortingItems(ref List<MyInventoryItem> items)
             {
                 foreach (var item in items)
                 {
-                    if (item.Type.TypeId == "MyObjectBuilder_Component" && Components.ContainsKey(item.Type.SubtypeId)) // Если имя сходится с тем что в словаре
+                    if (item.Type.TypeId == "MyObjectBuilder_Component" && Components.ContainsKey(item.Type.SubtypeId))
                         Components[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     else if (item.Type.TypeId == "MyObjectBuilder_Ingot" && Ingots.ContainsKey(item.Type.SubtypeId))
                         Ingots[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
@@ -217,6 +198,10 @@ namespace IngameScript
                         Hydrogen[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     else if (item.Type.TypeId == "MyObjectBuilder_AmmoMagazine" && Ammo.ContainsKey(item.Type.SubtypeId))
                         Ammo[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_ConsumableItem" && Consumables.ContainsKey(item.Type.SubtypeId))
+                        Consumables[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
+                    else if (item.Type.TypeId == "MyObjectBuilder_SeedItem" && Seeds.ContainsKey(item.Type.SubtypeId))
+                        Seeds[item.Type.SubtypeId].Amount += item.Amount.ToIntSafe();
                     else
                         Warning += $"\n[{item.Type.TypeId}/{item.Type.SubtypeId}] отсутствует в словарях";
                 }
@@ -231,16 +216,19 @@ namespace IngameScript
                     if (Ores.ContainsKey(item.Key)) _infoIngOre += $" ( {Math.Round((double)Ores[item.Key].Amount / 1000)} т руды )";
                 }
             }
+
             void AppendListInfo(ref Dictionary<string, MyItem> DictItems, string header, ref string info)
             {
                 if (header != "") info += $"\n=== {header} ===";
                 WriteItemsListInfo(ref DictItems, ref info);
             }
+
             void CreateListInfo(ref Dictionary<string, MyItem> DictItems, string header, ref string info)
             {
                 info = $"\n=== {header} ===";
                 WriteItemsListInfo(ref DictItems, ref info);
             }
+
             void WriteItemsListInfo(ref Dictionary<string, MyItem> DictItems, ref string info)
             {
                 foreach (var Item in DictItems)
@@ -288,7 +276,7 @@ namespace IngameScript
                     case "UltimateAutomaticRifleItem": return "Продвинутая винтовка";
                     case "AngleGrinder4Item": return "Элитная болгарка";
                     case "HandDrill4Item": return "Элитный ручной бур";
-                    case "Welder4Item": return "Элитный сварщика";
+                    case "Welder4Item": return "Элитный сварщик";
                     case "RapidFireAutomaticRifleItem": return "Скорострельная автоматическая винтовка";
                     case "PreciseAutomaticRifleItem": return "Точная винтовка";
                     case "OxygenBottle": return "Кислородный баллон";
@@ -296,6 +284,49 @@ namespace IngameScript
                     case "Missile200mm": return "Ракета 200мм";
                     case "NATO_25x184mm": return "Боеприпасы 25х184";
                     case "NATO_5p56x45mm": return "Магазин 5.56х45mm";
+                    // Расходники
+                    case "Medkit": return "Медицинский набор";
+                    case "Powerkit": return "Энергетический набор";
+                    case "RadiationKit": return "Противорадиационный набор";
+                    case "ClangCola": return "Кланг-Кола";
+                    case "CosmicCoffee": return "Космический кофе";
+                    case "MealPack_KelpCrisp": return "Хрустящая ламинария";
+                    case "MealPack_FruitBar": return "Фруктовый батончик";
+                    case "MealPack_GardenSlaw": return "Огородный салат";
+                    case "MealPack_RedPellets": return "Красные гранулы";
+                    case "MealPack_Chili": return "Чили";
+                    case "MealPack_Ramen": return "Лапша";
+                    case "MealPack_Flatbread": return "Лепешка";
+                    case "MealPack_FruitPastry": return "Фруктовая выпечка";
+                    case "MealPack_VeggieBurger": return "Вегетарианский бургер";
+                    case "MealPack_GreenPellets": return "Зеленые гранулы";
+                    case "MealPack_Curry": return "Карри";
+                    case "MealPack_Dumplings": return "Пельмени";
+                    case "MealPack_Spaghetti": return "Спагетти";
+                    case "MealPack_Lasagna": return "Лазанья";
+                    case "MealPack_Burrito": return "Буррито";
+                    case "MealPack_FrontierStew": return "Походное рагу";
+                    case "MealPack_SearedSabiroid": return "Жареный сабироид";
+                    case "MealPack_SteakDinner": return "Стейк-ужин";
+                    case "Fruit": return "Фрукты";
+                    case "Mushrooms": return "Грибы";
+                    case "Vegetables": return "Овощи";
+                    case "MammalMeatRaw": return "Сырое мясо млекопитающего";
+                    case "MammalMeatCooked": return "Приготовленное мясо млекопитающего";
+                    case "InsectMeatRaw": return "Сырое мясо насекомого";
+                    case "InsectMeatCooked": return "Приготовленное мясо насекомого";
+                    case "MealPack_Unknown": return "Неизвестный рацион";
+                    case "MealPack_FoodPaste": return "Пищевая паста";
+                    case "MealPack_SynthLoaf": return "Синтетический батон";
+                    case "MealPack_ClangCrunchies": return "Хрустящие Кланга";
+                    case "MealPack_BananaBeef": return "Банан-говядина";
+                    case "MealPack_Hardtack": return "Галета";
+                    case "MealPack_ExpiredSlop": return "Просроченная похлебка";
+                    // Семена
+                    case "Fruit_Seed": return "Семена фруктов";
+                    case "Grain_Seed": return "Семена зерновых";
+                    case "Mushrooms_Seed": return "Споры грибов";
+                    case "Vegetables_Seed": return "Семена овощей";
                     default: return name;
                 }
             }

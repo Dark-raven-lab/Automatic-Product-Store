@@ -21,42 +21,14 @@ namespace IngameScript
     {
         public class MyItem
         {
-            /// <summary>
-            /// Цена покупки товара
-            /// </summary>
             internal int BuyPrice { get; set; }
-            /// <summary>
-            /// Цена продажи товара
-            /// </summary>
             internal int SalePrice { get; set; }
-            /// <summary>
-            /// Колличество товара на складе
-            /// </summary>
             internal int Amount { get; set; } = 0;
-            /// <summary>
-            /// Максимальное колличество товара на складе
-            /// </summary>
             internal int MaxAmount { get; set; }
-            /// <summary>
-            /// Разрешена продажа
-            /// </summary>
             internal bool AlowSale { get; set; }
-            /// <summary>
-            /// Разрешена закупка
-            /// </summary>
             internal bool AlowBuy { get; set; }
-
             public TradeModel Mode { get; set; }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="MaxAmount">Граница товара</param>
-            /// <param name="BuyPrice">Цена покупки товара</param>
-            /// <param name="AlowBuy">Разрешить покупку</param>
-            /// <param name="SalePrice">Цена продажи товара</param>
-            /// <param name="AlowSale">Разрешить продажу</param>
-            /// <param name="storeMode">Режим торговли данным предметом</param>
             public MyItem(int MaxAmount = 0, int BuyPrice = 1, bool AlowBuy = false, int SalePrice = 2, bool AlowSale = false, TradeModel storeMode = TradeModel.Storage)
             {
                 this.MaxAmount = MaxAmount;
@@ -65,7 +37,7 @@ namespace IngameScript
                 this.AlowBuy = AlowBuy;
                 this.AlowSale = AlowSale;
                 Mode = storeMode;
-        }
+            }
         }
     }
 }
