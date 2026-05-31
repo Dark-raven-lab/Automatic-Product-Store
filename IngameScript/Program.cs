@@ -226,8 +226,7 @@ namespace IngameScript
         readonly string[] arguments = new string[] {
             "магазин.разместить",
             "магазин.очистить",
-            "магазин.список",
-            "магазин.время"
+            "магазин.список"
         };
 
         // Режим работы с товаром
@@ -317,11 +316,6 @@ namespace IngameScript
                 Me.CustomData += AutoStore.StoreConsumables.GetOrdersAndOffers();
                 Me.CustomData += AutoStore.StoreSeeds.GetOrdersAndOffers();
                 oldCommand = $"{arguments[2]}\nТовары из магазина выведены в данные ПБ";
-                AvailableCommands();
-            }
-            else if (arg.ToLower() == arguments[3])
-            {
-                oldCommand = $"{arguments[3]}\nОбновление магазина через\n{AutoStore.TimeCheckStore.RestTime}";
                 AvailableCommands();
             }
         }
