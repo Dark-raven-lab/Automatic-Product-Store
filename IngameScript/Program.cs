@@ -252,8 +252,9 @@ namespace IngameScript
             else if (Runtime.UpdateFrequency != UpdateFrequency.Update100) Runtime.UpdateFrequency = UpdateFrequency.Update100;
 
             if (arg != string.Empty) Arguments(arg);
-            
-            Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
+
+            Echo($"=== Автоматический магазин ===");
+            //Echo($"Выполнение {Runtime.LastRunTimeMs} мс");
             if (AutoStore.TimeCheckStore.Launched)
                 Echo($"Обновление предложений \n* через {AutoStore.TimeCheckStore.RestTime}");
                 
