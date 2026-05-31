@@ -91,39 +91,37 @@ namespace IngameScript
             void PlaceOffers()
             {
                 if (_containers.Count == 0) { Warning = "Размещение отменено. Нет конейнеров"; return; }
-                if (SortingContentsInventories())
+                if (!SortingContentsInventories()) return;
+                switch (_storeCount)
                 {
-                    switch (_storeCount)
-                    {
-                        case 0:
-                            StoreComp.PlaceOfferingsAndSales(ref Components, "MyObjectBuilder_Component");
-                            break;
-                        case 1:
-                            StoreIng.PlaceOfferingsAndSales(ref Ingots, "MyObjectBuilder_Ingot");
-                            break;
-                        case 2:
-                            StoreOre.PlaceOfferingsAndSales(ref Ores, "MyObjectBuilder_Ore");
-                            break;
-                        case 3:
-                            StoreTool.PlaceOfferingsAndSales(ref Tools, "MyObjectBuilder_PhysicalGunObject");
-                            StoreTool.PlaceOfferingsAndSales(ref Oxygen, "MyObjectBuilder_OxygenContainerObject", true);
-                            StoreTool.PlaceOfferingsAndSales(ref Hydrogen, "MyObjectBuilder_GasContainerObject", true);
-                            StoreTool.PlaceOfferingsAndSales(ref Ammo, "MyObjectBuilder_AmmoMagazine", true);
-                            break;
-                        case 4:
-                            StoreConsumables.PlaceOfferingsAndSales(ref Consumables, "MyObjectBuilder_ConsumableItem");
-                            break;
-                        case 5:
-                            StoreSeeds.PlaceOfferingsAndSales(ref Seeds, "MyObjectBuilder_SeedItem");
-                            break;
-                        default:
-                            _storeCount = 0;
-                            _containers.Clear();
-                            TimeCheckStore.Start();
-                            return;
-                    }
-                    _storeCount++;
+                    case 0:
+                        StoreComp.PlaceOfferingsAndSales(ref Components, "MyObjectBuilder_Component");
+                        break;
+                    case 1:
+                        StoreIng.PlaceOfferingsAndSales(ref Ingots, "MyObjectBuilder_Ingot");
+                        break;
+                    case 2:
+                        StoreOre.PlaceOfferingsAndSales(ref Ores, "MyObjectBuilder_Ore");
+                        break;
+                    case 3:
+                        StoreTool.PlaceOfferingsAndSales(ref Tools, "MyObjectBuilder_PhysicalGunObject");
+                        StoreTool.PlaceOfferingsAndSales(ref Oxygen, "MyObjectBuilder_OxygenContainerObject", true);
+                        StoreTool.PlaceOfferingsAndSales(ref Hydrogen, "MyObjectBuilder_GasContainerObject", true);
+                        StoreTool.PlaceOfferingsAndSales(ref Ammo, "MyObjectBuilder_AmmoMagazine", true);
+                        break;
+                    case 4:
+                        StoreConsumables.PlaceOfferingsAndSales(ref Consumables, "MyObjectBuilder_ConsumableItem");
+                        break;
+                    case 5:
+                        StoreSeeds.PlaceOfferingsAndSales(ref Seeds, "MyObjectBuilder_SeedItem");
+                        break;
+                    default:
+                        _storeCount = 0;
+                        _containers.Clear();
+                        TimeCheckStore.Start();
+                        return;
                 }
+                _storeCount++;
             }
 
             bool SortingContentsInventories()
